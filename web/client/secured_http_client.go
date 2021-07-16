@@ -7,11 +7,15 @@ import (
 )
 
 type SecuredHttpClient struct {
-	httpClient client.ContextualHttpClient
+	client     client.ContextualHttpClient
+	properties *SecurityProperties
 }
 
-func NewSecuredHttpClient(client client.ContextualHttpClient) *SecuredHttpClient {
-	return &SecuredHttpClient{httpClient: client}
+func NewSecuredHttpClient(client client.ContextualHttpClient, properties *SecurityProperties) *SecuredHttpClient {
+	return &SecuredHttpClient{
+		client:     client,
+		properties: properties,
+	}
 }
 
 func (s *SecuredHttpClient) Get(ctx context.Context, url string, result interface{}, options ...client.RequestOption) (*client.HttpResponse, error) {
@@ -35,5 +39,5 @@ func (s *SecuredHttpClient) Delete(ctx context.Context, url string, body interfa
 }
 
 func (s *SecuredHttpClient) Request(ctx context.Context, method string, url string, body interface{}, result interface{}, options ...client.RequestOption) (*client.HttpResponse, error) {
-	return s.httpClient.Request(ctx, method, url, body, result, options...)
+	return s.client.Request(ctx, method, url, body, result, options...)
 }

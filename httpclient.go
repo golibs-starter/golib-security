@@ -7,6 +7,6 @@ import (
 
 func SecuredHttpClientWrapper() func(client client.ContextualHttpClient) client.ContextualHttpClient {
 	return func(client client.ContextualHttpClient) client.ContextualHttpClient {
-		return secHttpClient.NewSecuredHttpClient(client)
+		return secHttpClient.NewSecuredHttpClient(client, nil)
 	}
 }

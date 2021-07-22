@@ -6,7 +6,7 @@ import (
 )
 
 type SecurityProperties struct {
-	BasicAuth []*BasicAuthProperties `mapstructure:"basic_auth"`
+	BasicAuth []*BasicAuthProperties
 }
 
 func (h SecurityProperties) Prefix() string {
@@ -17,7 +17,7 @@ func (h *SecurityProperties) PostBinding() {
 	for _, basicAuth := range h.BasicAuth {
 		urlRegexp, err := regexp.Compile(basicAuth.UrlMatch)
 		if err != nil {
-			log.Warnf("Basic auth url_match [%s] is not valid in regex format with error [%v]",
+			log.Warnf("Basic auth urlMatch [%s] is not valid in regex format with error [%v]",
 				basicAuth.UrlMatch, err)
 			continue
 		}
@@ -26,9 +26,9 @@ func (h *SecurityProperties) PostBinding() {
 }
 
 type BasicAuthProperties struct {
-	Username  string `mapstructure:"username"`
-	Password  string `mapstructure:"password"`
-	UrlMatch  string `mapstructure:"url_match"`
+	Username  string
+	Password  string
+	UrlMatch  string
 	urlRegexp *regexp.Regexp
 }
 

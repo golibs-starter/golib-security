@@ -50,7 +50,7 @@ func (s *SecuredHttpClient) Request(ctx context.Context, method string, url stri
 	result interface{}, options ...client.RequestOption) (*client.HttpResponse, error) {
 	httpOpts := make([]client.RequestOption, 0)
 	for _, auth := range s.properties.BasicAuth {
-		if auth.UrlRegexp() != nil && auth.urlRegexp.MatchString(url) {
+		if auth.UrlRegexp() != nil && auth.UrlRegexp().MatchString(url) {
 			httpOpts = append(httpOpts, client.WithBasicAuth(auth.Username, auth.Password))
 		}
 	}

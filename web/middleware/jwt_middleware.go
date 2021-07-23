@@ -8,6 +8,8 @@ import (
 	"gitlab.id.vin/vincart/golib-security/web/config"
 	"gitlab.id.vin/vincart/golib-security/web/constant"
 	"gitlab.id.vin/vincart/golib-security/web/service"
+	"gitlab.id.vin/vincart/golib/exception"
+	"gitlab.id.vin/vincart/golib/web/resource"
 	"net/http"
 )
 
@@ -24,18 +26,19 @@ func JwtAuth(properties *config.HttpSecurityProperties) (func(next http.Handler)
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if !isRequestMatched(r, properties.ProtectedUrls) {
-				// TODO response error
+				resource.WriteError(w, exception.Forbidden)
 				return
 			}
 			// Parse token from request
 			token, err := request.ParseFromRequest(r, jwtExtractor, jwtKeyFunc)
 			if err != nil {
-				// TODO response error
+				resource.WriteError(w, exception.BadRequest)
 				return
 			}
 			_, err = jwtService.GetAuthentication(token, r)
 			if err != nil {
-				// TODO response error
+				// TODO add more log
+				resource.WriteError(w, exception.Forbidden)
 				return
 			}
 			//getOrCreateRequestAttributes(r).CorrelationId = getOrNewCorrelationId(r)

@@ -8,7 +8,7 @@ import (
 type HttpSecurityProperties struct {
 	PredefinedPublicUrls []string
 	PublicUrls           []string
-	ProtectedUrls        []UrlToRole
+	ProtectedUrls        []*UrlToRole
 	BasicAuth            BasicSecurityProperties
 	Jwt                  JwtSecurityProperties
 }
@@ -36,7 +36,7 @@ type UrlToRole struct {
 	Method                             string
 	UrlPattern                         string
 	Roles                              []string
-	UnauthorizedWwwAuthenticateHeaders string
+	UnauthorizedWwwAuthenticateHeaders []string
 	urlRegexp                          *regexp.Regexp
 }
 

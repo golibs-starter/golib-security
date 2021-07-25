@@ -9,6 +9,8 @@ import (
 	"gitlab.id.vin/vincart/golib-security/web/constant"
 	"gitlab.id.vin/vincart/golib-security/web/service"
 	"gitlab.id.vin/vincart/golib/exception"
+	"gitlab.id.vin/vincart/golib/web/context"
+	"gitlab.id.vin/vincart/golib/web/log"
 	"gitlab.id.vin/vincart/golib/web/resource"
 	"net/http"
 )
@@ -30,24 +32,34 @@ func JwtAuth(properties *config.HttpSecurityProperties) (func(next http.Handler)
 				return
 			}
 			// Parse token from request
-			token, err := request.ParseFromRequest(r, jwtExtractor, jwtKeyFunc)
+			parser := request.WithParser(&jwt.Parser{ValidMethods: []string{properties.Jwt.Algorithm}})
+			token, err := request.ParseFromRequest(r, jwtExtractor, jwtKeyFunc, parser)
 			if err != nil {
-				resource.WriteError(w, exception.BadRequest)
+				log.Info(r.Context(), "Invalid JWT. Error [%s]", err.Error())
+				resource.WriteError(w, exception.Unauthorized)
 				return
 			}
-			_, err = jwtService.GetAuthentication(token, r)
+			// Get authentication by token
+			authentication, err := jwtService.GetAuthentication(token, r)
 			if err != nil {
-				// TODO add more log
-				resource.WriteError(w, exception.Forbidden)
+				log.Info(r.Context(), "Cannot get authentication. Error [%v]", err.Error())
+				resource.WriteError(w, exception.Unauthorized)
 				return
 			}
-			//getOrCreateRequestAttributes(r).CorrelationId = getOrNewCorrelationId(r)
+			if !authentication.IsAuthenticated() {
+				resource.WriteError(w, exception.Unauthorized)
+				return
+			}
+			requestAttributes := context.GetRequestAttributes(r.Context())
+			if requestAttributes != nil {
+				requestAttributes.SecurityAttributes.UserId = authentication.GetPrincipal()
+			}
 			next.ServeHTTP(w, r)
 		})
 	}, nil
 }
 
-func isRequestMatched(r *http.Request, protectedUrls []config.UrlToRole) bool {
+func isRequestMatched(r *http.Request, protectedUrls []*config.UrlToRole) bool {
 	if len(protectedUrls) > 0 {
 		uri := r.URL.RequestURI()
 		for _, protectedUrl := range protectedUrls {
@@ -75,12 +87,22 @@ func getJwtPublicKeyFunc(props *config.JwtSecurityProperties) (func(token *jwt.T
 	if len(props.PublicKey) == 0 {
 		return nil, errors.New("jwt public key must be defined when using jwt authentication")
 	}
-	return func(token *jwt.Token) (interface{}, error) {
-		// Validate the algorithm is what you expect
-		if token.Method.Alg() != props.Algorithm {
-			return nil, fmt.Errorf("unexpected jwt signing method: [%v], required [%s]",
-				token.Method.Alg(), props.Algorithm)
+	var err error
+	var publicKey interface{}
+	if len(props.PublicKey) > 0 {
+		if props.IsAlgEs() {
+			publicKey, err = jwt.ParseECPublicKeyFromPEM([]byte(props.PublicKey))
+		} else if props.IsAlgRs() {
+			publicKey, err = jwt.ParseRSAPublicKeyFromPEM([]byte(props.PublicKey))
+		} else {
+			err = fmt.Errorf("unsupported jwt algorithm: [%v], required startswith RS or ES",
+				props.Algorithm)
 		}
-		return []byte(props.PublicKey), nil
+		if err != nil {
+			return nil, err
+		}
+	}
+	return func(token *jwt.Token) (interface{}, error) {
+		return publicKey, nil
 	}, nil
 }

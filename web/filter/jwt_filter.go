@@ -1,4 +1,4 @@
-package middleware
+package filter
 
 import (
 	"errors"
@@ -8,14 +8,12 @@ import (
 	"gitlab.id.vin/vincart/golib-security/web/config"
 	"gitlab.id.vin/vincart/golib-security/web/constant"
 	"gitlab.id.vin/vincart/golib-security/web/service"
-	"gitlab.id.vin/vincart/golib/exception"
 	"gitlab.id.vin/vincart/golib/web/context"
 	"gitlab.id.vin/vincart/golib/web/log"
-	"gitlab.id.vin/vincart/golib/web/resource"
 	"net/http"
 )
 
-func JwtAuth(properties *config.HttpSecurityProperties) (func(next http.Handler) http.Handler, error) {
+func JwtSecurityFilter(properties *config.HttpSecurityProperties) (SecurityFilter, error) {
 	jwtKeyFunc, err := getJwtPublicKeyFunc(&properties.Jwt)
 	if err != nil {
 		return nil, err
@@ -25,53 +23,36 @@ func JwtAuth(properties *config.HttpSecurityProperties) (func(next http.Handler)
 		return nil, err
 	}
 	jwtExtractor := request.AuthorizationHeaderExtractor
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if !isRequestMatched(r, properties.ProtectedUrls) {
-				resource.WriteError(w, exception.Forbidden)
-				return
-			}
+	return func(next SecurityHandler) SecurityHandler {
+		return func(w http.ResponseWriter, r *http.Request) {
+			_ = r.Context().Value(constant.MatchedUrlContext).(*config.UrlToRole)
+
 			// Parse token from request
 			parser := request.WithParser(&jwt.Parser{ValidMethods: []string{properties.Jwt.Algorithm}})
 			token, err := request.ParseFromRequest(r, jwtExtractor, jwtKeyFunc, parser)
 			if err != nil {
 				log.Info(r.Context(), "Invalid JWT. Error [%s]", err.Error())
-				resource.WriteError(w, exception.Unauthorized)
+				next(w, r)
 				return
 			}
 			// Get authentication by token
 			authentication, err := jwtService.GetAuthentication(token, r)
 			if err != nil {
 				log.Info(r.Context(), "Cannot get authentication. Error [%v]", err.Error())
-				resource.WriteError(w, exception.Unauthorized)
+				next(w, r)
 				return
 			}
 			if !authentication.IsAuthenticated() {
-				resource.WriteError(w, exception.Unauthorized)
+				next(w, r)
 				return
 			}
 			requestAttributes := context.GetRequestAttributes(r.Context())
 			if requestAttributes != nil {
 				requestAttributes.SecurityAttributes.UserId = authentication.GetPrincipal()
 			}
-			next.ServeHTTP(w, r)
-		})
-	}, nil
-}
-
-func isRequestMatched(r *http.Request, protectedUrls []*config.UrlToRole) bool {
-	if len(protectedUrls) > 0 {
-		uri := r.URL.RequestURI()
-		for _, protectedUrl := range protectedUrls {
-			if protectedUrl.Method != "" && protectedUrl.Method != r.Method {
-				continue
-			}
-			if protectedUrl.UrlRegexp() != nil && protectedUrl.UrlRegexp().MatchString(uri) {
-				return true
-			}
+			// Authorized
 		}
-	}
-	return false
+	}, nil
 }
 
 func getJwtService(props *config.JwtSecurityProperties) (service.JwtService, error) {

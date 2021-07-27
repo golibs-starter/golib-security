@@ -1,20 +1,33 @@
 package golibsec
 
 import (
-	"github.com/pkg/errors"
+	"fmt"
 	"gitlab.id.vin/vincart/golib"
 	"gitlab.id.vin/vincart/golib-security/web/config"
+	"gitlab.id.vin/vincart/golib-security/web/filter"
 	"gitlab.id.vin/vincart/golib-security/web/middleware"
 )
 
-func WithJwtAuthentication() golib.Module {
+type AuthFilter func(*config.HttpSecurityProperties) filter.SecurityFilter
+
+func WithJwtAuth() AuthFilter {
+	return func(properties *config.HttpSecurityProperties) filter.SecurityFilter {
+		jwtFilter, err := filter.JwtSecurityFilter(properties)
+		if err != nil {
+			panic(fmt.Sprintf("Cannot init JWT Security Filter: [%v]", err))
+		}
+		return jwtFilter
+	}
+}
+
+func WithAuthFilter(httpSecurityFilters ...AuthFilter) golib.Module {
 	return func(app *golib.App) {
 		properties := &config.HttpSecurityProperties{}
 		app.ConfigLoader.Bind(properties)
-		jwtAuthMiddleware, err := middleware.JwtAuth(properties)
-		if err != nil {
-			panic(errors.WithMessagef(err, "Cannot init JwtAuth Middleware"))
+		filters := make([]filter.SecurityFilter, 0)
+		for _, httpSecFilter := range httpSecurityFilters {
+			filters = append(filters, httpSecFilter(properties))
 		}
-		app.AddMiddleware(jwtAuthMiddleware)
+		app.AddMiddleware(middleware.AuthFilterChain(properties, filters...))
 	}
 }

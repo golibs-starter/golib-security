@@ -4,7 +4,7 @@ import "strings"
 
 type JwtSecurityProperties struct {
 	PublicKey string
-	Algorithm string `default:"RSA"`
+	Algorithm string `default:"RS256"`
 	Type      string `default:"JWT_TOKEN_MOBILE"`
 }
 

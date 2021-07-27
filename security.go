@@ -20,7 +20,7 @@ func WithJwtAuth() AuthFilter {
 	}
 }
 
-func WithAuthFilter(httpSecurityFilters ...AuthFilter) golib.Module {
+func WithHttpSecurityAutoConfig(httpSecurityFilters ...AuthFilter) golib.Module {
 	return func(app *golib.App) {
 		properties := &config.HttpSecurityProperties{}
 		app.ConfigLoader.Bind(properties)

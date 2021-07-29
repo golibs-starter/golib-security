@@ -1,10 +1,7 @@
 package filter
 
 import (
-	"context"
-	"gitlab.id.vin/vincart/golib-security/web/constant"
-	"gitlab.id.vin/vincart/golib/exception"
-	"gitlab.id.vin/vincart/golib/web/resource"
+	"gitlab.id.vin/vincart/golib-security/web/auth/authen"
 	"net/http"
 )
 
@@ -14,7 +11,7 @@ type SecurityFilter func(next SecurityHandler) SecurityHandler
 
 // SecurityHandler
 // Handler function for security filter
-type SecurityHandler func(w http.ResponseWriter, r *http.Request)
+type SecurityHandler func(w http.ResponseWriter, r *http.Request) authen.Authentication
 
 // CreateChainHandler Creates the security filter chain
 func CreateChainHandler(filters []SecurityFilter, stoppingHandler SecurityHandler) SecurityHandler {
@@ -25,7 +22,7 @@ func CreateChainHandler(filters []SecurityFilter, stoppingHandler SecurityHandle
 	return securityHandler
 }
 
-var UnauthorizedHandler SecurityHandler = func(w http.ResponseWriter, r *http.Request) {
-	*r = *r.WithContext(context.WithValue(r.Context(), constant.UnauthorizedContext, true))
-	resource.WriteError(w, exception.Unauthorized)
+var UnauthorizedHandler SecurityHandler = func(w http.ResponseWriter, r *http.Request) authen.Authentication {
+	// Returns nil to indicates that the request is unauthenticated
+	return nil
 }

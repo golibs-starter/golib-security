@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
+	"gitlab.id.vin/vincart/golib-security/web/auth/authen"
 	"gitlab.id.vin/vincart/golib-security/web/config"
 	"gitlab.id.vin/vincart/golib-security/web/constant"
 	"gitlab.id.vin/vincart/golib-security/web/service"
@@ -24,33 +25,26 @@ func JwtSecurityFilter(properties *config.HttpSecurityProperties) (SecurityFilte
 	}
 	jwtExtractor := request.AuthorizationHeaderExtractor
 	return func(next SecurityHandler) SecurityHandler {
-		return func(w http.ResponseWriter, r *http.Request) {
-			_ = r.Context().Value(constant.MatchedUrlContext).(*config.UrlToRole)
-
+		return func(w http.ResponseWriter, r *http.Request) authen.Authentication {
 			// Parse token from request
 			parser := request.WithParser(&jwt.Parser{ValidMethods: []string{properties.Jwt.Algorithm}})
 			token, err := request.ParseFromRequest(r, jwtExtractor, jwtKeyFunc, parser)
 			if err != nil {
 				log.Info(r.Context(), "Invalid JWT. Error [%s]", err.Error())
-				next(w, r)
-				return
+				return next(w, r)
 			}
 			// Get authentication by token
 			authentication, err := jwtService.GetAuthentication(token, r)
 			if err != nil {
 				log.Info(r.Context(), "Cannot get authentication. Error [%v]", err.Error())
-				next(w, r)
-				return
-			}
-			if !authentication.IsAuthenticated() {
-				next(w, r)
-				return
+				return next(w, r)
 			}
 			requestAttributes := context.GetRequestAttributes(r.Context())
 			if requestAttributes != nil {
-				requestAttributes.SecurityAttributes.UserId = authentication.GetPrincipal()
+				requestAttributes.SecurityAttributes.UserId = authentication.Principal()
 			}
 			// Authorized
+			return authentication
 		}
 	}, nil
 }

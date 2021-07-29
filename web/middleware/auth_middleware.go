@@ -14,7 +14,7 @@ import (
 
 func AuthFilterChain(
 	properties *config.HttpSecurityProperties,
-	authenticationManager authen.Manager,
+	authenticationManager authen.AuthenticationManager,
 	accessDecisionManager authorization.AccessDecisionManager,
 	filters []filter.SecurityFilter,
 ) func(next http.Handler) http.Handler {

@@ -3,10 +3,10 @@ package authen
 import "errors"
 
 type ProviderManager struct {
-	providers []Provider
+	providers []AuthenticationProvider
 }
 
-func NewProviderManager(providers ...Provider) *ProviderManager {
+func NewProviderManager(providers ...AuthenticationProvider) *ProviderManager {
 	return &ProviderManager{providers: providers}
 }
 
@@ -19,6 +19,6 @@ func (p *ProviderManager) Authenticate(authentication Authentication) (Authentic
 	return nil, errors.New("authentication is not supported by any provided")
 }
 
-func (p *ProviderManager) AddProvider(provider Provider) {
+func (p *ProviderManager) AddProvider(provider AuthenticationProvider) {
 	p.providers = append(p.providers, provider)
 }

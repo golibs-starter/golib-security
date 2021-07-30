@@ -5,12 +5,12 @@ import (
 	"gitlab.id.vin/vincart/golib-security/web/auth/user"
 )
 
-type JwtAuthentication struct {
-	*BaseAuthenticationToken
+type JwtTokenAuthentication struct {
+	*BaseAuthentication
 }
 
-func NewJwtAuthentication(userDetails user.Details, authorities []authority.GrantedAuthority) *JwtAuthentication {
-	base := NewBaseAuthenticationToken(authorities)
+func NewJwtTokenAuthentication(userDetails user.Details, authorities []authority.GrantedAuthority) *JwtTokenAuthentication {
+	base := NewBaseAuthentication(authorities)
 	base.SetUserDetails(userDetails)
-	return &JwtAuthentication{base}
+	return &JwtTokenAuthentication{base}
 }

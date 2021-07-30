@@ -5,40 +5,40 @@ import (
 	"gitlab.id.vin/vincart/golib-security/web/auth/user"
 )
 
-type BaseAuthenticationToken struct {
+type BaseAuthentication struct {
 	userDetails   user.Details
 	authorities   []authority.GrantedAuthority
 	authenticated bool
 }
 
-func NewBaseAuthenticationToken(authorities []authority.GrantedAuthority) *BaseAuthenticationToken {
-	return &BaseAuthenticationToken{authorities: authorities}
+func NewBaseAuthentication(authorities []authority.GrantedAuthority) *BaseAuthentication {
+	return &BaseAuthentication{authorities: authorities}
 }
 
-func (j JwtAuthentication) Principal() string {
+func (j JwtTokenAuthentication) Principal() string {
 	return j.userDetails.Username()
 }
 
-func (j JwtAuthentication) Details() user.Details {
+func (j JwtTokenAuthentication) Details() user.Details {
 	return j.userDetails
 }
 
-func (j JwtAuthentication) Credentials() interface{} {
+func (j JwtTokenAuthentication) Credentials() interface{} {
 	return nil
 }
 
-func (j JwtAuthentication) Authorities() []authority.GrantedAuthority {
+func (j JwtTokenAuthentication) Authorities() []authority.GrantedAuthority {
 	return j.authorities
 }
 
-func (j JwtAuthentication) Authenticated() bool {
+func (j JwtTokenAuthentication) Authenticated() bool {
 	return j.authenticated
 }
 
-func (b *BaseAuthenticationToken) SetUserDetails(userDetails user.Details) {
+func (b *BaseAuthentication) SetUserDetails(userDetails user.Details) {
 	b.userDetails = userDetails
 }
 
-func (b *BaseAuthenticationToken) SetAuthenticated(authenticated bool) {
+func (b *BaseAuthentication) SetAuthenticated(authenticated bool) {
 	b.authenticated = authenticated
 }

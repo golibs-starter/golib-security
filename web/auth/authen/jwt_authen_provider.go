@@ -8,12 +8,12 @@ func NewJwtAuthProvider() *JwtAuthProvider {
 }
 
 func (j JwtAuthProvider) Authenticate(authentication Authentication) (Authentication, error) {
-	jwtAuth, _ := authentication.(*JwtAuthentication)
+	jwtAuth, _ := authentication.(*JwtTokenAuthentication)
 	jwtAuth.authenticated = true
 	return jwtAuth, nil
 }
 
 func (j JwtAuthProvider) Supports(authentication Authentication) bool {
-	_, ok := authentication.(*JwtAuthentication)
+	_, ok := authentication.(*JwtTokenAuthentication)
 	return ok
 }

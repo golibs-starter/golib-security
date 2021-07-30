@@ -15,24 +15,16 @@ func NewBaseAuthentication(authorities []authority.GrantedAuthority) *BaseAuthen
 	return &BaseAuthentication{authorities: authorities}
 }
 
-func (j JwtTokenAuthentication) Principal() string {
-	return j.userDetails.Username()
+func (b BaseAuthentication) Details() user.Details {
+	return b.userDetails
 }
 
-func (j JwtTokenAuthentication) Details() user.Details {
-	return j.userDetails
+func (b BaseAuthentication) Authorities() []authority.GrantedAuthority {
+	return b.authorities
 }
 
-func (j JwtTokenAuthentication) Credentials() interface{} {
-	return nil
-}
-
-func (j JwtTokenAuthentication) Authorities() []authority.GrantedAuthority {
-	return j.authorities
-}
-
-func (j JwtTokenAuthentication) Authenticated() bool {
-	return j.authenticated
+func (b BaseAuthentication) Authenticated() bool {
+	return b.authenticated
 }
 
 func (b *BaseAuthentication) SetUserDetails(userDetails user.Details) {

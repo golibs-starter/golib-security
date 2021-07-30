@@ -9,7 +9,7 @@ type Authentication interface {
 
 	// Principal The identity of the principal being authenticated.
 	// This might be a user id or username
-	Principal() string
+	Principal() interface{}
 
 	// Details Stores additional details about the authentication request.
 	// These might contain username, a device id etc.

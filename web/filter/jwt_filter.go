@@ -41,7 +41,7 @@ func JwtSecurityFilter(properties *config.HttpSecurityProperties) (SecurityFilte
 			}
 			requestAttributes := context.GetRequestAttributes(r.Context())
 			if requestAttributes != nil {
-				requestAttributes.SecurityAttributes.UserId = authentication.Principal()
+				requestAttributes.SecurityAttributes.UserId = authentication.Principal().(string)
 			}
 			// Authorized
 			return authentication

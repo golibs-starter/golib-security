@@ -9,8 +9,19 @@ type JwtTokenAuthentication struct {
 	*BaseAuthentication
 }
 
-func NewJwtTokenAuthentication(userDetails user.Details, authorities []authority.GrantedAuthority) *JwtTokenAuthentication {
+func NewJwtTokenAuthentication(
+	userDetails user.Details,
+	authorities []authority.GrantedAuthority,
+) *JwtTokenAuthentication {
 	base := NewBaseAuthentication(authorities)
 	base.SetUserDetails(userDetails)
 	return &JwtTokenAuthentication{base}
+}
+
+func (j JwtTokenAuthentication) Principal() interface{} {
+	return j.userDetails.Username()
+}
+
+func (j JwtTokenAuthentication) Credentials() interface{} {
+	return nil
 }

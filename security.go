@@ -24,6 +24,7 @@ func WithHttpSecurityAutoConfig(httpSecurityFilters ...AuthFilter) golib.Module 
 		app.AddMiddleware(
 			middleware.RequestMatcher(properties),
 			middleware.Auth(authProviderManager, accessDecisionManager, filters),
+			middleware.SecurityContext(),
 		)
 	}
 }

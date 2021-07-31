@@ -9,7 +9,6 @@ import (
 	"gitlab.id.vin/vincart/golib-security/web/config"
 	"gitlab.id.vin/vincart/golib-security/web/constant"
 	"gitlab.id.vin/vincart/golib-security/web/service"
-	"gitlab.id.vin/vincart/golib/web/context"
 	"gitlab.id.vin/vincart/golib/web/log"
 	"net/http"
 )
@@ -38,9 +37,6 @@ func JwtAuthSecurityFilter(properties *config.HttpSecurityProperties) (SecurityF
 			if err != nil {
 				log.Info(r.Context(), "Cannot get authentication. Error [%v]", err.Error())
 				return next(w, r)
-			}
-			if requestAttributes := context.GetRequestAttributes(r.Context()); requestAttributes != nil {
-				requestAttributes.SecurityAttributes.UserId = authentication.Principal().(string)
 			}
 			return authentication
 		}

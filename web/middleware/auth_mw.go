@@ -1,11 +1,10 @@
 package middleware
 
 import (
-	"context"
 	"gitlab.id.vin/vincart/golib-security/utils"
 	"gitlab.id.vin/vincart/golib-security/web/auth/authen"
 	"gitlab.id.vin/vincart/golib-security/web/auth/authorization"
-	"gitlab.id.vin/vincart/golib-security/web/constant"
+	secContext "gitlab.id.vin/vincart/golib-security/web/context"
 	"gitlab.id.vin/vincart/golib-security/web/filter"
 	"gitlab.id.vin/vincart/golib/exception"
 	"gitlab.id.vin/vincart/golib/web/log"
@@ -20,8 +19,8 @@ func Auth(
 ) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			protectedUrl, protected := isProtectedRequest(r)
-			if !protected {
+			matchedUrl := secContext.GetMatchedUrlProtection(r)
+			if matchedUrl == nil {
 				log.Debug(r.Context(), "Authentication is not required for this request, skip")
 				next.ServeHTTP(w, r)
 				return
@@ -49,7 +48,7 @@ func Auth(
 				return
 			}
 
-			restrictedAuthorities := utils.ConvertRolesToSimpleAuthorities(protectedUrl.Roles)
+			restrictedAuthorities := utils.ConvertRolesToSimpleAuthorities(matchedUrl.Roles)
 			if err := accessDecisionManager.Decide(authentication, restrictedAuthorities); err != nil {
 				if _, ok := err.(exception.Exception); ok {
 					log.Info(r.Context(), "Authorization failed, error [%s]", err.Error())
@@ -61,9 +60,7 @@ func Auth(
 			}
 
 			// Continues to the next step
-			next.ServeHTTP(w, r.WithContext(
-				context.WithValue(r.Context(), constant.ContextAuthentication, authentication),
-			))
+			next.ServeHTTP(w, secContext.AttachAuthentication(r, authentication))
 		})
 	}
 }

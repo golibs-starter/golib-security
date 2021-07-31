@@ -5,7 +5,6 @@ import (
 	"github.com/pkg/errors"
 	"gitlab.id.vin/vincart/golib-security/web/auth/authen"
 	"gitlab.id.vin/vincart/golib-security/web/constant"
-	"gitlab.id.vin/vincart/golib/web/context"
 	"gitlab.id.vin/vincart/golib/web/log"
 	"net/http"
 	"strings"
@@ -27,10 +26,6 @@ func BasicAuthSecurityFilter() (SecurityFilter, error) {
 			if err != nil {
 				log.Info(r.Context(), "Invalid Basic Auth Token. Error [%s]", err.Error())
 				return next(w, r)
-			}
-			requestAttributes := context.GetRequestAttributes(r.Context())
-			if requestAttributes != nil {
-				requestAttributes.SecurityAttributes.TechnicalUsername = authentication.Principal().(string)
 			}
 			return authentication
 		}

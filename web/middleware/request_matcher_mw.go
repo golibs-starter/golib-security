@@ -1,9 +1,8 @@
 package middleware
 
 import (
-	"context"
 	"gitlab.id.vin/vincart/golib-security/web/config"
-	"gitlab.id.vin/vincart/golib-security/web/constant"
+	secContext "gitlab.id.vin/vincart/golib-security/web/context"
 	"gitlab.id.vin/vincart/golib/exception"
 	"gitlab.id.vin/vincart/golib/utils"
 	"gitlab.id.vin/vincart/golib/web/log"
@@ -25,11 +24,9 @@ func RequestMatcher(properties *config.HttpSecurityProperties) func(next http.Ha
 				resource.WriteError(w, exception.Forbidden)
 				return
 			}
-			log.Debug(r.Context(), "Protected URL is detected. URL pattern [%s], method [%s], roles [%v]",
+			log.Debug(r.Context(), "Matched protection URL pattern [%s], method [%s], roles [%v]",
 				protectedUrl.UrlPattern, protectedUrl.Method, protectedUrl.Roles)
-			next.ServeHTTP(w, r.WithContext(
-				context.WithValue(r.Context(), constant.ContextProtectedUrl, protectedUrl),
-			))
+			next.ServeHTTP(w, secContext.AttachMatchedUrlProtection(r, protectedUrl))
 		})
 	}
 }
@@ -51,12 +48,4 @@ func getRequestMatched(r *http.Request, protectedUrls []*config.UrlToRole) *conf
 
 func matchesPublicRequest(r *http.Request, configuredPublicUrls []string) bool {
 	return utils.ContainsString(configuredPublicUrls, r.URL.RequestURI())
-}
-
-func isProtectedRequest(r *http.Request) (protectedUrl *config.UrlToRole, protected bool) {
-	protectedUrlVal := r.Context().Value(constant.ContextProtectedUrl)
-	if protectedUrlVal == nil {
-		return nil, false
-	}
-	return protectedUrlVal.(*config.UrlToRole), true
 }

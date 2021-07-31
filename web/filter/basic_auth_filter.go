@@ -12,8 +12,8 @@ import (
 
 const AuthorizationBasicScheme = "Basic"
 
-func BasicAuthSecurityFilter() (SecurityFilter, error) {
-	return func(next SecurityHandler) SecurityHandler {
+func BasicAuthSecurityFilter() (AuthenticationFilter, error) {
+	return func(next AuthenticationHandler) AuthenticationHandler {
 		return func(w http.ResponseWriter, r *http.Request) authen.Authentication {
 			header := strings.TrimSpace(r.Header.Get(constant.HeaderAuthorization))
 			if header == "" || !startsWithBasicScheme(header) {

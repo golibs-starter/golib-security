@@ -5,16 +5,17 @@ import (
 	"net/http"
 )
 
-// SecurityFilter
+// AuthenticationFilter
 // It's the part of security filter chain
-type SecurityFilter func(next SecurityHandler) SecurityHandler
+type AuthenticationFilter func(next AuthenticationHandler) AuthenticationHandler
 
-// SecurityHandler
-// Handler function for security filter
-type SecurityHandler func(w http.ResponseWriter, r *http.Request) authen.Authentication
+// AuthenticationHandler
+// Handler function for authentication filter
+type AuthenticationHandler func(w http.ResponseWriter, r *http.Request) authen.Authentication
 
-// CreateChainHandler Creates the security filter chain
-func CreateChainHandler(filters []SecurityFilter, stoppingHandler SecurityHandler) SecurityHandler {
+// CreateAuthenticationHandler Creates the filter chain,
+// and returns the authentication handler
+func CreateAuthenticationHandler(filters []AuthenticationFilter, stoppingHandler AuthenticationHandler) AuthenticationHandler {
 	var securityHandler = stoppingHandler
 	for i := len(filters) - 1; i >= 0; i-- {
 		securityHandler = filters[i](securityHandler)
@@ -22,7 +23,7 @@ func CreateChainHandler(filters []SecurityFilter, stoppingHandler SecurityHandle
 	return securityHandler
 }
 
-var UnauthorizedHandler SecurityHandler = func(w http.ResponseWriter, r *http.Request) authen.Authentication {
+var UnauthorizedHandler AuthenticationHandler = func(w http.ResponseWriter, r *http.Request) authen.Authentication {
 	// Returns nil to indicates that the request is unauthenticated
 	return nil
 }

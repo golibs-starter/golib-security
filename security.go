@@ -9,7 +9,7 @@ import (
 	"gitlab.id.vin/vincart/golib-security/web/middleware"
 )
 
-type AuthFilter func(*config.HttpSecurityProperties, *authen.ProviderManager) filter.SecurityFilter
+type AuthFilter func(*config.HttpSecurityProperties, *authen.ProviderManager) filter.AuthenticationFilter
 
 func WithHttpSecurityAutoConfig(httpSecurityFilters ...AuthFilter) golib.Module {
 	return func(app *golib.App) {
@@ -17,7 +17,7 @@ func WithHttpSecurityAutoConfig(httpSecurityFilters ...AuthFilter) golib.Module 
 		app.ConfigLoader.Bind(properties)
 		authProviderManager := authen.NewProviderManager()
 		accessDecisionManager := authorization.NewAffirmativeBasedADM(authorization.NewRoleVoterADV())
-		filters := make([]filter.SecurityFilter, 0)
+		filters := make([]filter.AuthenticationFilter, 0)
 		for _, httpSecFilter := range httpSecurityFilters {
 			filters = append(filters, httpSecFilter(properties, authProviderManager))
 		}

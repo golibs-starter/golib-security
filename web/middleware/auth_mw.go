@@ -15,7 +15,7 @@ import (
 func Auth(
 	authManager authen.AuthenticationManager,
 	accessDecisionManager authorization.AccessDecisionManager,
-	filters []filter.SecurityFilter,
+	filters []filter.AuthenticationFilter,
 ) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -27,7 +27,7 @@ func Auth(
 			}
 
 			// Create and run the security filter chain
-			filterChainHandler := filter.CreateChainHandler(filters, filter.UnauthorizedHandler)
+			filterChainHandler := filter.CreateAuthenticationHandler(filters, filter.UnauthorizedHandler)
 			authentication := filterChainHandler(w, r)
 			if authentication == nil {
 				log.Info(r.Context(), "Authentication is required to access this resource")

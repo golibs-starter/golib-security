@@ -13,7 +13,7 @@ import (
 	"net/http"
 )
 
-func JwtAuthSecurityFilter(properties *config.HttpSecurityProperties) (SecurityFilter, error) {
+func JwtAuthSecurityFilter(properties *config.HttpSecurityProperties) (AuthenticationFilter, error) {
 	jwtKeyFunc, err := getJwtPublicKeyFunc(&properties.Jwt)
 	if err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ func JwtAuthSecurityFilter(properties *config.HttpSecurityProperties) (SecurityF
 	}
 	jwtExtractor := request.AuthorizationHeaderExtractor
 	jwtParser := request.WithParser(&jwt.Parser{ValidMethods: []string{properties.Jwt.Algorithm}})
-	return func(next SecurityHandler) SecurityHandler {
+	return func(next AuthenticationHandler) AuthenticationHandler {
 		return func(w http.ResponseWriter, r *http.Request) authen.Authentication {
 			// Parse token from request
 			token, err := request.ParseFromRequest(r, jwtExtractor, jwtKeyFunc, jwtParser)

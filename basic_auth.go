@@ -11,7 +11,7 @@ import (
 )
 
 func WithBasicAuth() AuthFilter {
-	return func(props *config.HttpSecurityProperties, authPrm *authen.ProviderManager) filter.SecurityFilter {
+	return func(props *config.HttpSecurityProperties, authPrm *authen.ProviderManager) filter.AuthenticationFilter {
 		users := getSimpleUsersFromBasicAuthUsers(props.BasicAuth.Users)
 		userDetailsService := user.NewInMemUserDetailsService(users)
 		passwordEncoder := crypto.NewNoOpPasswordEncoder()

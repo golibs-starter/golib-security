@@ -8,7 +8,7 @@ import (
 )
 
 func WithJwtAuth() AuthFilter {
-	return func(props *config.HttpSecurityProperties, authPrm *authen.ProviderManager) filter.SecurityFilter {
+	return func(props *config.HttpSecurityProperties, authPrm *authen.ProviderManager) filter.AuthenticationFilter {
 		authPrm.AddProvider(authen.NewJwtAuthProvider())
 		jwtFilter, err := filter.JwtAuthSecurityFilter(props)
 		if err != nil {

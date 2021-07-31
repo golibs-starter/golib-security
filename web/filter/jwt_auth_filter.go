@@ -14,7 +14,7 @@ import (
 	"net/http"
 )
 
-func JwtSecurityFilter(properties *config.HttpSecurityProperties) (SecurityFilter, error) {
+func JwtAuthSecurityFilter(properties *config.HttpSecurityProperties) (SecurityFilter, error) {
 	jwtKeyFunc, err := getJwtPublicKeyFunc(&properties.Jwt)
 	if err != nil {
 		return nil, err
@@ -24,11 +24,11 @@ func JwtSecurityFilter(properties *config.HttpSecurityProperties) (SecurityFilte
 		return nil, err
 	}
 	jwtExtractor := request.AuthorizationHeaderExtractor
+	jwtParser := request.WithParser(&jwt.Parser{ValidMethods: []string{properties.Jwt.Algorithm}})
 	return func(next SecurityHandler) SecurityHandler {
 		return func(w http.ResponseWriter, r *http.Request) authen.Authentication {
 			// Parse token from request
-			parser := request.WithParser(&jwt.Parser{ValidMethods: []string{properties.Jwt.Algorithm}})
-			token, err := request.ParseFromRequest(r, jwtExtractor, jwtKeyFunc, parser)
+			token, err := request.ParseFromRequest(r, jwtExtractor, jwtKeyFunc, jwtParser)
 			if err != nil {
 				log.Info(r.Context(), "Invalid JWT. Error [%s]", err.Error())
 				return next(w, r)
@@ -39,11 +39,9 @@ func JwtSecurityFilter(properties *config.HttpSecurityProperties) (SecurityFilte
 				log.Info(r.Context(), "Cannot get authentication. Error [%v]", err.Error())
 				return next(w, r)
 			}
-			requestAttributes := context.GetRequestAttributes(r.Context())
-			if requestAttributes != nil {
+			if requestAttributes := context.GetRequestAttributes(r.Context()); requestAttributes != nil {
 				requestAttributes.SecurityAttributes.UserId = authentication.Principal().(string)
 			}
-			// Authorized
 			return authentication
 		}
 	}, nil

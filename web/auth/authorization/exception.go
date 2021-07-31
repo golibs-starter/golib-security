@@ -1,4 +1,4 @@
-package exception
+package authorization
 
 import (
 	"gitlab.id.vin/vincart/golib/exception"

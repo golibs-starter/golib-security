@@ -12,6 +12,9 @@ type BaseAuthentication struct {
 }
 
 func NewBaseAuthentication(authorities []authority.GrantedAuthority) *BaseAuthentication {
+	if authorities == nil {
+		authorities = make([]authority.GrantedAuthority, 0)
+	}
 	return &BaseAuthentication{authorities: authorities}
 }
 

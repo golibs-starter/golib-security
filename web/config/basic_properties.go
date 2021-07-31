@@ -1,11 +1,11 @@
 package config
 
 type BasicSecurityProperties struct {
-	Users []BasicAuthProperties `mapstructure:"users"`
+	Users []BasicAuthProperties
 }
 
 type BasicAuthProperties struct {
-	Username string   `mapstructure:"username"`
-	Password string   `mapstructure:"password"`
-	Roles    []string `mapstructure:"roles"`
+	Username string
+	Password string
+	Roles    []string
 }

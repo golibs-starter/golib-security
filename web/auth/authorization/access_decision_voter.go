@@ -15,15 +15,7 @@ type AccessDecisionVoter interface {
 	Supports(authority authority.GrantedAuthority) bool
 
 	// Vote Indicates whether access is granted or not.
-	// The decision must be affirmative AccessGranted, negative AccessDenied
-	// or the AccessDecisionVoter can abstain AccessAbstain from voting.
+	// The decision must be affirmative VotingGranted, negative VotingDenied
+	// or the AccessDecisionVoter can abstain VotingAbstain from voting.
 	Vote(authentication authen.Authentication, restrictedAuthorities []authority.GrantedAuthority) VotingResult
 }
-
-type VotingResult int
-
-const (
-	AccessGranted VotingResult = 1
-	AccessAbstain VotingResult = 0
-	AccessDenied  VotingResult = -1
-)

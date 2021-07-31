@@ -1,7 +1,6 @@
 package golibsec
 
 import (
-	"fmt"
 	"gitlab.id.vin/vincart/golib"
 	"gitlab.id.vin/vincart/golib-security/web/auth/authen"
 	"gitlab.id.vin/vincart/golib-security/web/auth/authorization"
@@ -11,17 +10,6 @@ import (
 )
 
 type AuthFilter func(*config.HttpSecurityProperties, *authen.ProviderManager) filter.SecurityFilter
-
-func WithJwtAuth() AuthFilter {
-	return func(properties *config.HttpSecurityProperties, authPrm *authen.ProviderManager) filter.SecurityFilter {
-		authPrm.AddProvider(authen.NewJwtAuthProvider())
-		jwtFilter, err := filter.JwtSecurityFilter(properties)
-		if err != nil {
-			panic(fmt.Sprintf("Cannot init JWT Security Filter: [%v]", err))
-		}
-		return jwtFilter
-	}
-}
 
 func WithHttpSecurityAutoConfig(httpSecurityFilters ...AuthFilter) golib.Module {
 	return func(app *golib.App) {
@@ -33,11 +21,9 @@ func WithHttpSecurityAutoConfig(httpSecurityFilters ...AuthFilter) golib.Module 
 		for _, httpSecFilter := range httpSecurityFilters {
 			filters = append(filters, httpSecFilter(properties, authProviderManager))
 		}
-		app.AddMiddleware(middleware.AuthFilterChain(
-			properties,
-			authProviderManager,
-			accessDecisionManager,
-			filters,
-		))
+		app.AddMiddleware(
+			middleware.RequestMatcher(properties),
+			middleware.Auth(authProviderManager, accessDecisionManager, filters),
+		)
 	}
 }

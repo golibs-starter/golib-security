@@ -20,21 +20,21 @@ func (r RoleVoterADV) Supports(authority authority.GrantedAuthority) bool {
 
 func (r RoleVoterADV) Vote(auth authen.Authentication, restrictedAuthorities []authority.GrantedAuthority) VotingResult {
 	if auth == nil {
-		return AccessDenied
+		return VotingDenied
 	}
 	if restrictedAuthorities == nil || len(restrictedAuthorities) == 0 {
-		return AccessGranted
+		return VotingGranted
 	}
 	grantedAuthorities := make([]string, 0)
 	for _, grantedAuthority := range auth.Authorities() {
 		grantedAuthorities = append(grantedAuthorities, grantedAuthority.Authority())
 	}
-	result := AccessAbstain
+	result := VotingAbstain
 	for _, restrictedAuthority := range restrictedAuthorities {
 		if r.Supports(restrictedAuthority) {
-			result = AccessDenied
+			result = VotingDenied
 			if utils.ContainsString(grantedAuthorities, restrictedAuthority.Authority()) {
-				return AccessGranted
+				return VotingGranted
 			}
 		}
 	}

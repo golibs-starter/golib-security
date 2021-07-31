@@ -18,10 +18,10 @@ func NewJwtTokenAuthentication(
 	return &JwtTokenAuthentication{base}
 }
 
-func (j JwtTokenAuthentication) Principal() interface{} {
+func (j *JwtTokenAuthentication) Principal() interface{} {
 	return j.userDetails.Username()
 }
 
-func (j JwtTokenAuthentication) Credentials() interface{} {
+func (j *JwtTokenAuthentication) Credentials() interface{} {
 	return nil
 }

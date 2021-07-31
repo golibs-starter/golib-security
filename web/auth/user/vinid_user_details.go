@@ -17,6 +17,10 @@ func (v VinIdUserDetails) Username() string {
 	return v.userId
 }
 
+func (v VinIdUserDetails) Password() string {
+	return ""
+}
+
 func (v VinIdUserDetails) Authorities() []authority.GrantedAuthority {
 	return v.authorities
 }

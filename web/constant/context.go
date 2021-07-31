@@ -1,6 +1,6 @@
 package constant
 
 const (
-	UnauthorizedContext = "unauthorized"
-	MatchedUrlContext   = "matched_url"
+	ContextProtectedUrl   = "PROTECTED_URL"
+	ContextAuthentication = "AUTHENTICATION"
 )

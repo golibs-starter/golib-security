@@ -1,7 +1,6 @@
 package authorization
 
 import (
-	"gitlab.id.vin/vincart/golib-security/exception"
 	"gitlab.id.vin/vincart/golib-security/web/auth/authen"
 	"gitlab.id.vin/vincart/golib-security/web/auth/authorization/authority"
 )
@@ -25,9 +24,9 @@ func (a AffirmativeBasedADM) Supports(authority authority.GrantedAuthority) bool
 
 func (a AffirmativeBasedADM) Decide(authentication authen.Authentication, restrictedAuthorities []authority.GrantedAuthority) error {
 	for _, voter := range a.voters {
-		if voter.Vote(authentication, restrictedAuthorities) == AccessGranted {
+		if voter.Vote(authentication, restrictedAuthorities) == VotingGranted {
 			return nil
 		}
 	}
-	return exception.AccessDenied
+	return AccessDenied
 }

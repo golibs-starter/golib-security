@@ -7,7 +7,7 @@ import (
 	"gitlab.id.vin/vincart/golib-security/web/filter"
 )
 
-func WithJwtAuth() AuthFilter {
+func UsingJwtAuth() AuthFilter {
 	return func(props *config.HttpSecurityProperties, authPrm *authen.ProviderManager) filter.AuthenticationFilter {
 		authPrm.AddProvider(authen.NewJwtAuthProvider())
 		jwtFilter, err := filter.JwtAuthSecurityFilter(props)

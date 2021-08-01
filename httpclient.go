@@ -6,7 +6,7 @@ import (
 	"gitlab.id.vin/vincart/golib/web/client"
 )
 
-func SecuredHttpClientWrapper() func(app *golib.App, client client.ContextualHttpClient) client.ContextualHttpClient {
+func UsingSecuredHttpClient() func(app *golib.App, client client.ContextualHttpClient) client.ContextualHttpClient {
 	return func(app *golib.App, client client.ContextualHttpClient) client.ContextualHttpClient {
 		securityProps := &secHttpClient.SecurityProperties{}
 		app.ConfigLoader.Bind(securityProps)

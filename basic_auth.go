@@ -10,7 +10,7 @@ import (
 	"gitlab.id.vin/vincart/golib-security/web/filter"
 )
 
-func WithBasicAuth() AuthFilter {
+func UsingBasicAuth() AuthFilter {
 	return func(props *config.HttpSecurityProperties, authPrm *authen.ProviderManager) filter.AuthenticationFilter {
 		users := getSimpleUsersFromBasicAuthUsers(props.BasicAuth.Users)
 		userDetailsService := user.NewInMemUserDetailsService(users)

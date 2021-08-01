@@ -22,23 +22,26 @@ func (h HttpSecurityProperties) Prefix() string {
 
 func (h *HttpSecurityProperties) PostBinding() {
 	if len(h.ProtectedUrls) == 0 {
+		log.Info("No protected urls have been defined")
 		return
 	}
 	for _, protectedUrl := range h.ProtectedUrls {
-		if err := h.checkRolesValid(protectedUrl.Roles); err != nil {
+		if err := h.validateRoles(protectedUrl.Roles); err != nil {
 			panic(fmt.Sprintf("Roles is invalid, error [%s]", err.Error()))
 		}
-		urlRegexp, err := regexp.Compile(protectedUrl.UrlPattern)
-		if err != nil {
-			log.Warnf("Protected urlPattern [%s] is not valid in regex format with error [%v]",
-				protectedUrl.UrlPattern, err)
-			continue
+		if len(protectedUrl.UnauthorizedWwwAuthenticateHeaders) == 0 {
+			panic(fmt.Sprintf("At least one WWW-Authenticate header values must be defined for pattern [%s]",
+				protectedUrl.UrlPattern))
 		}
-		protectedUrl.urlRegexp = urlRegexp
+		if regex, err := regexp.Compile(protectedUrl.UrlPattern); err != nil {
+			log.Warnf("Url Pattern [%s] is not valid in regex format, error [%v]", protectedUrl.UrlPattern, err)
+		} else {
+			protectedUrl.urlRegexp = regex
+		}
 	}
 }
 
-func (h HttpSecurityProperties) checkRolesValid(roles []string) error {
+func (h HttpSecurityProperties) validateRoles(roles []string) error {
 	for _, role := range roles {
 		if strings.HasPrefix(role, authorization.RolePrefix) {
 			return fmt.Errorf("role should not start with '%s' since it is automatically inserted, got %s",

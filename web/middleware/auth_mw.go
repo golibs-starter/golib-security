@@ -4,6 +4,7 @@ import (
 	"gitlab.id.vin/vincart/golib-security/utils"
 	"gitlab.id.vin/vincart/golib-security/web/auth/authen"
 	"gitlab.id.vin/vincart/golib-security/web/auth/authorization"
+	"gitlab.id.vin/vincart/golib-security/web/constant"
 	secContext "gitlab.id.vin/vincart/golib-security/web/context"
 	"gitlab.id.vin/vincart/golib-security/web/filter"
 	"gitlab.id.vin/vincart/golib/exception"
@@ -31,6 +32,7 @@ func Auth(
 			authentication := filterChainHandler(w, r)
 			if authentication == nil {
 				log.Info(r.Context(), "Authentication is required to access this resource")
+				writeAuthenticationDirective(w, matchedUrl.UnauthorizedWwwAuthenticateHeaders)
 				resource.WriteError(w, exception.Unauthorized)
 				return
 			}
@@ -62,5 +64,11 @@ func Auth(
 			// Continues to the next step
 			next.ServeHTTP(w, secContext.AttachAuthentication(r, authentication))
 		})
+	}
+}
+
+func writeAuthenticationDirective(w http.ResponseWriter, unauthorizedWwwAuthenticateHeaders []string) {
+	for _, val := range unauthorizedWwwAuthenticateHeaders {
+		w.Header().Add(constant.HeaderWWWAuthenticate, val)
 	}
 }

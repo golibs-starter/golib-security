@@ -1,3 +1,6 @@
 package constant
 
-const HeaderAuthorization = "Authorization"
+const (
+	HeaderAuthorization   = "Authorization"
+	HeaderWWWAuthenticate = "WWW-Authenticate"
+)

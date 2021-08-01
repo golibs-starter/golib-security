@@ -1,7 +1,7 @@
 package config
 
 type BasicSecurityProperties struct {
-	Users []BasicAuthProperties
+	Users []*BasicAuthProperties
 }
 
 type BasicAuthProperties struct {

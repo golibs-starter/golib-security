@@ -3,7 +3,7 @@ package config
 import (
 	"fmt"
 	"gitlab.id.vin/vincart/golib-security/web/auth/authorization"
-	"gitlab.id.vin/vincart/golib/log"
+	"gitlab.id.vin/vincart/golib/config"
 	"regexp"
 	"strings"
 )
@@ -12,8 +12,8 @@ type HttpSecurityProperties struct {
 	PredefinedPublicUrls []string
 	PublicUrls           []string
 	ProtectedUrls        []*UrlToRole
-	BasicAuth            BasicSecurityProperties
-	Jwt                  JwtSecurityProperties
+	BasicAuth            *BasicSecurityProperties
+	Jwt                  *JwtSecurityProperties
 }
 
 func (h HttpSecurityProperties) Prefix() string {
@@ -21,24 +21,39 @@ func (h HttpSecurityProperties) Prefix() string {
 }
 
 func (h *HttpSecurityProperties) PostBinding() {
-	if len(h.ProtectedUrls) == 0 {
-		log.Info("No protected urls have been defined")
-		return
-	}
-	for _, protectedUrl := range h.ProtectedUrls {
-		if err := h.validateRoles(protectedUrl.Roles); err != nil {
-			panic(fmt.Sprintf("Roles is invalid, error [%s]", err.Error()))
-		}
-		if len(protectedUrl.UnauthorizedWwwAuthenticateHeaders) == 0 {
-			panic(fmt.Sprintf("At least one WWW-Authenticate header values must be defined for pattern [%s]",
-				protectedUrl.UrlPattern))
-		}
-		if regex, err := regexp.Compile(protectedUrl.UrlPattern); err != nil {
-			log.Warnf("Url Pattern [%s] is not valid in regex format, error [%v]", protectedUrl.UrlPattern, err)
-		} else {
-			protectedUrl.urlRegexp = regex
+	// Validate protected urls
+	if len(h.ProtectedUrls) > 0 {
+		for _, protectedUrl := range h.ProtectedUrls {
+			if err := h.validateProtectedUrl(protectedUrl); err != nil {
+				panic(fmt.Sprintf("Protected url is invalid, error [%s]", err.Error()))
+			}
 		}
 	}
+
+	// Replace placeholder from environment for basic auth user
+	if h.BasicAuth != nil && h.BasicAuth.Users != nil {
+		for _, user := range h.BasicAuth.Users {
+			if err := h.replacePlaceholderBasicAuthUser(user); err != nil {
+				panic(fmt.Sprintf("Cannot replace placeholder for basic auth, error [%v]", err))
+			}
+		}
+	}
+}
+
+func (h HttpSecurityProperties) validateProtectedUrl(url *UrlToRole) error {
+	if err := h.validateRoles(url.Roles); err != nil {
+		return fmt.Errorf("roles is invalid, error [%s]", err.Error())
+	}
+	if len(url.UnauthorizedWwwAuthenticateHeaders) == 0 {
+		return fmt.Errorf("at least one www-authenticate header values must be defined for pattern [%s]",
+			url.UrlPattern)
+	}
+	regex, err := regexp.Compile(url.UrlPattern)
+	if err != nil {
+		return fmt.Errorf("url pattern [%s] is not valid in regex format, error [%v]", url.UrlPattern, err)
+	}
+	url.urlRegexp = regex
+	return nil
 }
 
 func (h HttpSecurityProperties) validateRoles(roles []string) error {
@@ -48,6 +63,21 @@ func (h HttpSecurityProperties) validateRoles(roles []string) error {
 				authorization.RolePrefix, role)
 		}
 	}
+	return nil
+}
+
+func (h HttpSecurityProperties) replacePlaceholderBasicAuthUser(user *BasicAuthProperties) error {
+	newUsername, err := config.ReplacePlaceholderValue(user.Username)
+	if err != nil {
+		return fmt.Errorf("replace placeholder for username error [%v]", err)
+	}
+	user.Username = newUsername.(string)
+
+	newPassword, err := config.ReplacePlaceholderValue(user.Password)
+	if err != nil {
+		return fmt.Errorf("replace placeholder for password error [%v]", err)
+	}
+	user.Password = newPassword.(string)
 	return nil
 }
 

@@ -24,7 +24,7 @@ func UsingBasicAuth() AuthFilter {
 	}
 }
 
-func getSimpleUsersFromBasicAuthUsers(basicUsers []config.BasicAuthProperties) []user.Details {
+func getSimpleUsersFromBasicAuthUsers(basicUsers []*config.BasicAuthProperties) []user.Details {
 	users := make([]user.Details, 0)
 	if basicUsers == nil {
 		return users

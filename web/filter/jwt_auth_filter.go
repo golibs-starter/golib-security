@@ -14,11 +14,11 @@ import (
 )
 
 func JwtAuthSecurityFilter(properties *config.HttpSecurityProperties) (AuthenticationFilter, error) {
-	jwtKeyFunc, err := getJwtPublicKeyFunc(&properties.Jwt)
+	jwtKeyFunc, err := getJwtPublicKeyFunc(properties.Jwt)
 	if err != nil {
 		return nil, err
 	}
-	jwtService, err := getJwtService(&properties.Jwt)
+	jwtService, err := getJwtService(properties.Jwt)
 	if err != nil {
 		return nil, err
 	}

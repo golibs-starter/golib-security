@@ -12,6 +12,12 @@ import (
 
 func UsingBasicAuth() AuthFilter {
 	return func(props *config.HttpSecurityProperties, authPrm *authen.ProviderManager) filter.AuthenticationFilter {
+		if props.BasicAuth == nil {
+			panic("Missing Basic Auth config")
+		}
+		if props.BasicAuth.Users == nil || len(props.BasicAuth.Users) == 0 {
+			panic("Missing Basic Auth users config")
+		}
 		users := getSimpleUsersFromBasicAuthUsers(props.BasicAuth.Users)
 		userDetailsService := user.NewInMemUserDetailsService(users)
 		passwordEncoder := crypto.NewNoOpPasswordEncoder()

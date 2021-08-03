@@ -3,6 +3,7 @@ package context
 import (
 	"context"
 	"gitlab.id.vin/vincart/golib-security/web/auth/authen"
+	"gitlab.id.vin/vincart/golib-security/web/auth/user"
 	"gitlab.id.vin/vincart/golib-security/web/config"
 	"net/http"
 )
@@ -28,6 +29,14 @@ func GetAuthentication(r *http.Request) authen.Authentication {
 		return nil
 	}
 	return authentication
+}
+
+func GetUserDetails(r *http.Request) user.Details {
+	authentication := GetAuthentication(r)
+	if authentication == nil {
+		return nil
+	}
+	return authentication.Details()
 }
 
 func AttachMatchedUrlProtection(r *http.Request, url *config.UrlToRole) *http.Request {

@@ -54,6 +54,6 @@ func matchesPublicRequest(app *golib.App, r *http.Request, configuredPublicUrls 
 }
 
 func removeContextPath(uri string, contextPath string) string {
-	uri = strings.TrimLeft(uri, contextPath)
+	uri = strings.TrimPrefix(uri, contextPath)
 	return "/" + strings.TrimLeft(uri, "/")
 }

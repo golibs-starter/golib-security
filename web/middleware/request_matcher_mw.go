@@ -15,7 +15,7 @@ import (
 func RequestMatcher(app *golib.App, properties *config.HttpSecurityProperties) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if matchesPublicRequest(r, append(properties.PredefinedPublicUrls, properties.PublicUrls...)) {
+			if matchesPublicRequest(app, r, append(properties.PredefinedPublicUrls, properties.PublicUrls...)) {
 				log.Debug(r.Context(), "Url is in configured public url, skip")
 				next.ServeHTTP(w, r)
 				return
@@ -35,8 +35,7 @@ func RequestMatcher(app *golib.App, properties *config.HttpSecurityProperties) f
 
 func getRequestMatched(app *golib.App, r *http.Request, protectedUrls []*config.UrlToRole) *config.UrlToRole {
 	if len(protectedUrls) > 0 {
-		uri := strings.TrimLeft(r.URL.RequestURI(), app.Path())
-		uri = "/" + strings.TrimLeft(uri, "/")
+		uri := removeContextPath(r.URL.RequestURI(), app.Path())
 		for _, protectedUrl := range protectedUrls {
 			if protectedUrl.Method != "" && protectedUrl.Method != r.Method {
 				continue
@@ -49,6 +48,12 @@ func getRequestMatched(app *golib.App, r *http.Request, protectedUrls []*config.
 	return nil
 }
 
-func matchesPublicRequest(r *http.Request, configuredPublicUrls []string) bool {
-	return utils.ContainsString(configuredPublicUrls, r.URL.RequestURI())
+func matchesPublicRequest(app *golib.App, r *http.Request, configuredPublicUrls []string) bool {
+	uri := removeContextPath(r.URL.RequestURI(), app.Path())
+	return utils.ContainsString(configuredPublicUrls, uri)
+}
+
+func removeContextPath(uri string, contextPath string) string {
+	uri = strings.TrimLeft(uri, contextPath)
+	return "/" + strings.TrimLeft(uri, "/")
 }

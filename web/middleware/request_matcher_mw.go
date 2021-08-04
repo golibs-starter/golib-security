@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"gitlab.id.vin/vincart/golib"
 	"gitlab.id.vin/vincart/golib-security/web/config"
 	secContext "gitlab.id.vin/vincart/golib-security/web/context"
 	"gitlab.id.vin/vincart/golib/exception"
@@ -8,9 +9,10 @@ import (
 	"gitlab.id.vin/vincart/golib/web/log"
 	"gitlab.id.vin/vincart/golib/web/resource"
 	"net/http"
+	"strings"
 )
 
-func RequestMatcher(properties *config.HttpSecurityProperties) func(next http.Handler) http.Handler {
+func RequestMatcher(app *golib.App, properties *config.HttpSecurityProperties) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if matchesPublicRequest(r, append(properties.PredefinedPublicUrls, properties.PublicUrls...)) {
@@ -18,7 +20,7 @@ func RequestMatcher(properties *config.HttpSecurityProperties) func(next http.Ha
 				next.ServeHTTP(w, r)
 				return
 			}
-			protectedUrl := getRequestMatched(r, properties.ProtectedUrls)
+			protectedUrl := getRequestMatched(app, r, properties.ProtectedUrls)
 			if protectedUrl == nil {
 				log.Debug(r.Context(), "Forbidden, no protected url matched")
 				resource.WriteError(w, exception.Forbidden)
@@ -31,9 +33,10 @@ func RequestMatcher(properties *config.HttpSecurityProperties) func(next http.Ha
 	}
 }
 
-func getRequestMatched(r *http.Request, protectedUrls []*config.UrlToRole) *config.UrlToRole {
+func getRequestMatched(app *golib.App, r *http.Request, protectedUrls []*config.UrlToRole) *config.UrlToRole {
 	if len(protectedUrls) > 0 {
-		uri := r.URL.RequestURI()
+		uri := strings.TrimLeft(r.URL.RequestURI(), app.Path())
+		uri = "/" + strings.TrimLeft(uri, "/")
 		for _, protectedUrl := range protectedUrls {
 			if protectedUrl.Method != "" && protectedUrl.Method != r.Method {
 				continue

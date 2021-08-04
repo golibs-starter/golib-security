@@ -22,7 +22,7 @@ func WithHttpSecurityAutoConfig(httpSecurityFilters ...AuthFilter) golib.Module 
 			filters = append(filters, httpSecFilter(properties, authProviderManager))
 		}
 		app.AddMiddleware(
-			middleware.RequestMatcher(properties),
+			middleware.RequestMatcher(app, properties),
 			middleware.Auth(authProviderManager, accessDecisionManager, filters),
 			middleware.SecurityContext(),
 		)

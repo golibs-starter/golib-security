@@ -9,7 +9,7 @@ import (
 	"gitlab.id.vin/vincart/golib-security/web/filter"
 	"gitlab.id.vin/vincart/golib/exception"
 	"gitlab.id.vin/vincart/golib/web/log"
-	"gitlab.id.vin/vincart/golib/web/resource"
+	"gitlab.id.vin/vincart/golib/web/response"
 	"net/http"
 )
 
@@ -33,20 +33,20 @@ func Auth(
 			if authentication == nil {
 				log.Info(r.Context(), "Authentication is required to access this resource")
 				writeAuthenticationDirective(w, matchedUrl.UnauthorizedWwwAuthenticateHeaders)
-				resource.WriteError(w, exception.Unauthorized)
+				response.WriteError(w, exception.Unauthorized)
 				return
 			}
 
 			authentication, err := authManager.Authenticate(authentication)
 			if err != nil {
 				log.Info(r.Context(), "Authentication failed, error [%s]", err.Error())
-				resource.WriteError(w, exception.Unauthorized)
+				response.WriteError(w, exception.Unauthorized)
 				return
 			}
 
 			if !authentication.Authenticated() {
 				log.Info(r.Context(), "Authentication failed, the request is unauthenticated")
-				resource.WriteError(w, exception.Unauthorized)
+				response.WriteError(w, exception.Unauthorized)
 				return
 			}
 
@@ -57,7 +57,7 @@ func Auth(
 				} else {
 					log.Error(r.Context(), "Error when trying to authorize request, error [%v]", err)
 				}
-				resource.WriteError(w, err)
+				response.WriteError(w, err)
 				return
 			}
 

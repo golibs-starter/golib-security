@@ -7,7 +7,7 @@ import (
 	"gitlab.id.vin/vincart/golib/exception"
 	"gitlab.id.vin/vincart/golib/utils"
 	"gitlab.id.vin/vincart/golib/web/log"
-	"gitlab.id.vin/vincart/golib/web/resource"
+	"gitlab.id.vin/vincart/golib/web/response"
 	"net/http"
 	"strings"
 )
@@ -23,7 +23,7 @@ func RequestMatcher(app *golib.App, properties *config.HttpSecurityProperties) f
 			protectedUrl := getRequestMatched(app, r, properties.ProtectedUrls)
 			if protectedUrl == nil {
 				log.Debug(r.Context(), "Forbidden, no protected url matched")
-				resource.WriteError(w, exception.Forbidden)
+				response.WriteError(w, exception.Forbidden)
 				return
 			}
 			log.Debug(r.Context(), "Matched protection URL pattern [%s], method [%s], roles [%v]",

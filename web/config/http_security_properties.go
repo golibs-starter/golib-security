@@ -16,22 +16,25 @@ type HttpSecurityProperties struct {
 	Jwt                  *JwtSecurityProperties
 }
 
-func NewHttpSecurityProperties(loader config.Loader) *HttpSecurityProperties {
+func NewHttpSecurityProperties(loader config.Loader) (*HttpSecurityProperties, error) {
 	props := HttpSecurityProperties{}
-	loader.Bind(&props)
-	return &props
+	err := loader.Bind(&props)
+	if err != nil {
+		return nil, err
+	}
+	return &props, nil
 }
 
 func (h HttpSecurityProperties) Prefix() string {
 	return "vinid.security.http"
 }
 
-func (h *HttpSecurityProperties) PostBinding() {
+func (h *HttpSecurityProperties) PostBinding() error {
 	// Validate protected urls
 	if len(h.ProtectedUrls) > 0 {
 		for _, protectedUrl := range h.ProtectedUrls {
 			if err := h.validateProtectedUrl(protectedUrl); err != nil {
-				panic(fmt.Sprintf("Protected url is invalid, error [%s]", err.Error()))
+				return fmt.Errorf("protected url is invalid, error [%s]", err.Error())
 			}
 		}
 	}
@@ -40,10 +43,11 @@ func (h *HttpSecurityProperties) PostBinding() {
 	if h.BasicAuth != nil && h.BasicAuth.Users != nil {
 		for _, user := range h.BasicAuth.Users {
 			if err := h.replacePlaceholderBasicAuthUser(user); err != nil {
-				panic(fmt.Sprintf("Cannot replace placeholder for basic auth, error [%v]", err))
+				return fmt.Errorf("cannot replace placeholder for basic auth, error [%v]", err)
 			}
 		}
 	}
+	return nil
 }
 
 func (h HttpSecurityProperties) validateProtectedUrl(url *UrlToRole) error {

@@ -17,7 +17,7 @@ func NewAuthFilterFns(fns ...AuthFilterFn) AuthFilterFns {
 	return fns
 }
 
-func NewHttpSecurityAutoConfig(loader coreConfig.Loader) *config.HttpSecurityProperties {
+func NewHttpSecurityAutoConfig(loader coreConfig.Loader) (*config.HttpSecurityProperties, error) {
 	return config.NewHttpSecurityProperties(loader)
 }
 

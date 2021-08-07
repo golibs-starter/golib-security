@@ -10,29 +10,32 @@ type SecurityProperties struct {
 	BasicAuth []*BasicAuthProperties
 }
 
-func NewSecurityProperties(loader config.Loader) *SecurityProperties {
+func NewSecurityProperties(loader config.Loader) (*SecurityProperties, error) {
 	props := SecurityProperties{}
-	loader.Bind(&props)
-	return &props
+	if err := loader.Bind(&props); err != nil {
+		return nil, err
+	}
+	return &props, nil
 }
 
 func (h SecurityProperties) Prefix() string {
 	return "vinid.security.http.client"
 }
 
-func (h *SecurityProperties) PostBinding() {
+func (h *SecurityProperties) PostBinding() error {
 	for _, basicAuth := range h.BasicAuth {
 		urlRegexp, err := regexp.Compile(basicAuth.UrlMatch)
 		if err != nil {
-			panic(fmt.Sprintf("Basic auth urlMatch [%s] is not valid in regex format with error [%v]",
-				basicAuth.UrlMatch, err))
+			return fmt.Errorf("basic auth urlMatch [%s] is not valid in regex format with error [%v]",
+				basicAuth.UrlMatch, err)
 		}
 		basicAuth.urlRegexp = urlRegexp
 
 		if err := h.replacePlaceholderBasicAuthUser(basicAuth); err != nil {
-			panic(fmt.Sprintf("Cannot replace placeholder for http client basic auth, error [%v]", err))
+			return fmt.Errorf("cannot replace placeholder for http client basic auth, error [%v]", err)
 		}
 	}
+	return nil
 }
 
 func (h SecurityProperties) replacePlaceholderBasicAuthUser(user *BasicAuthProperties) error {

@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"gitlab.id.vin/vincart/golib"
 	"gitlab.id.vin/vincart/golib-security/web/config"
 	secContext "gitlab.id.vin/vincart/golib-security/web/context"
 	"gitlab.id.vin/vincart/golib/exception"
@@ -12,15 +11,15 @@ import (
 	"strings"
 )
 
-func RequestMatcher(app *golib.App, properties *config.HttpSecurityProperties) func(next http.Handler) http.Handler {
+func RequestMatcher(properties *config.HttpSecurityProperties, contextPath string) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if matchesPublicRequest(app, r, append(properties.PredefinedPublicUrls, properties.PublicUrls...)) {
+			if matchesPublicRequest(contextPath, r, append(properties.PredefinedPublicUrls, properties.PublicUrls...)) {
 				log.Debug(r.Context(), "Url is in configured public url, skip")
 				next.ServeHTTP(w, r)
 				return
 			}
-			protectedUrl := getRequestMatched(app, r, properties.ProtectedUrls)
+			protectedUrl := getRequestMatched(contextPath, r, properties.ProtectedUrls)
 			if protectedUrl == nil {
 				log.Debug(r.Context(), "Forbidden, no protected url matched")
 				response.WriteError(w, exception.Forbidden)
@@ -33,9 +32,9 @@ func RequestMatcher(app *golib.App, properties *config.HttpSecurityProperties) f
 	}
 }
 
-func getRequestMatched(app *golib.App, r *http.Request, protectedUrls []*config.UrlToRole) *config.UrlToRole {
+func getRequestMatched(contextPath string, r *http.Request, protectedUrls []*config.UrlToRole) *config.UrlToRole {
 	if len(protectedUrls) > 0 {
-		uri := removeContextPath(r.URL.RequestURI(), app.Path())
+		uri := removeContextPath(r.URL.RequestURI(), contextPath)
 		for _, protectedUrl := range protectedUrls {
 			if protectedUrl.Method != "" && protectedUrl.Method != r.Method {
 				continue
@@ -48,8 +47,8 @@ func getRequestMatched(app *golib.App, r *http.Request, protectedUrls []*config.
 	return nil
 }
 
-func matchesPublicRequest(app *golib.App, r *http.Request, configuredPublicUrls []string) bool {
-	uri := removeContextPath(r.URL.RequestURI(), app.Path())
+func matchesPublicRequest(contextPath string, r *http.Request, configuredPublicUrls []string) bool {
+	uri := removeContextPath(r.URL.RequestURI(), contextPath)
 	return utils.ContainsString(configuredPublicUrls, uri)
 }
 

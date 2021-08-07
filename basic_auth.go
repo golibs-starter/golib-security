@@ -10,7 +10,7 @@ import (
 	"gitlab.id.vin/vincart/golib-security/web/filter"
 )
 
-func UsingBasicAuth() AuthFilter {
+func UsingBasicAuth() AuthFilterFn {
 	return func(props *config.HttpSecurityProperties, authPrm *authen.ProviderManager) filter.AuthenticationFilter {
 		if props.BasicAuth == nil {
 			panic("Missing Basic Auth config")

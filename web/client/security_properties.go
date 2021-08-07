@@ -10,6 +10,12 @@ type SecurityProperties struct {
 	BasicAuth []*BasicAuthProperties
 }
 
+func NewSecurityProperties(loader config.Loader) *SecurityProperties {
+	props := SecurityProperties{}
+	loader.Bind(&props)
+	return &props
+}
+
 func (h SecurityProperties) Prefix() string {
 	return "vinid.security.http.client"
 }

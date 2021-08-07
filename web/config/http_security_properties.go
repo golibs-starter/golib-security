@@ -16,6 +16,12 @@ type HttpSecurityProperties struct {
 	Jwt                  *JwtSecurityProperties
 }
 
+func NewHttpSecurityProperties(loader config.Loader) *HttpSecurityProperties {
+	props := HttpSecurityProperties{}
+	loader.Bind(&props)
+	return &props
+}
+
 func (h HttpSecurityProperties) Prefix() string {
 	return "vinid.security.http"
 }

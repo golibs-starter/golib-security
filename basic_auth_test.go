@@ -7,7 +7,7 @@ import (
 )
 
 func Test_getSimpleUsersFromBasicAuthUsers_ShouldReturnCorrect(t *testing.T) {
-	basicUsers := []config.BasicAuthProperties{
+	basicUsers := []*config.BasicAuthProperties{
 		{
 			Username: "user1",
 			Password: "pass1",

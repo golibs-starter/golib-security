@@ -1,6 +1,7 @@
 package golibsec
 
 import (
+	"errors"
 	"fmt"
 	"gitlab.id.vin/vincart/golib-security/crypto"
 	"gitlab.id.vin/vincart/golib-security/utils"
@@ -8,26 +9,38 @@ import (
 	"gitlab.id.vin/vincart/golib-security/web/auth/user"
 	"gitlab.id.vin/vincart/golib-security/web/config"
 	"gitlab.id.vin/vincart/golib-security/web/filter"
+	"go.uber.org/fx"
 )
 
-func UsingBasicAuth() AuthFilterFn {
-	return func(props *config.HttpSecurityProperties, authPrm *authen.ProviderManager) filter.AuthenticationFilter {
-		if props.BasicAuth == nil {
-			panic("Missing Basic Auth config")
-		}
-		if props.BasicAuth.Users == nil || len(props.BasicAuth.Users) == 0 {
-			panic("Missing Basic Auth users config")
-		}
-		users := getSimpleUsersFromBasicAuthUsers(props.BasicAuth.Users)
-		userDetailsService := user.NewInMemUserDetailsService(users)
-		passwordEncoder := crypto.NewNoOpPasswordEncoder()
-		authPrm.AddProvider(authen.NewUsernamePasswordAuthProvider(userDetailsService, passwordEncoder))
-		basicAuthFilter, err := filter.BasicAuthSecurityFilter()
-		if err != nil {
-			panic(fmt.Sprintf("Cannot init Basic Auth Security Filter: [%v]", err))
-		}
-		return basicAuthFilter
+type NewBasicAuthenticationFilterIn struct {
+	fx.In
+	SecurityProperties  *config.HttpSecurityProperties
+	AuthProviderManager *authen.ProviderManager
+}
+
+type NewBasicAuthenticationFilterOut struct {
+	fx.Out
+	Filter filter.AuthenticationFilter `group:"authentication_filter"`
+}
+
+func NewBasicAuthenticationFilter(in NewBasicAuthenticationFilterIn) (NewBasicAuthenticationFilterOut, error) {
+	out := NewBasicAuthenticationFilterOut{}
+	if in.SecurityProperties.BasicAuth == nil {
+		return out, errors.New("missing Basic Auth config")
 	}
+	if in.SecurityProperties.BasicAuth.Users == nil || len(in.SecurityProperties.BasicAuth.Users) == 0 {
+		return out, errors.New("missing Basic Auth Users config")
+	}
+	users := getSimpleUsersFromBasicAuthUsers(in.SecurityProperties.BasicAuth.Users)
+	userDetailsService := user.NewInMemUserDetailsService(users)
+	passwordEncoder := crypto.NewNoOpPasswordEncoder()
+	in.AuthProviderManager.AddProvider(authen.NewUsernamePasswordAuthProvider(userDetailsService, passwordEncoder))
+	basicAuthFilter, err := filter.BasicAuthSecurityFilter()
+	if err != nil {
+		return out, fmt.Errorf("cannot init Basic Auth Security Filter: [%v]", err)
+	}
+	out.Filter = basicAuthFilter
+	return out, nil
 }
 
 func getSimpleUsersFromBasicAuthUsers(basicUsers []*config.BasicAuthProperties) []user.Details {

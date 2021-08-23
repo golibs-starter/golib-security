@@ -8,35 +8,32 @@ import (
 	"gitlab.id.vin/vincart/golib-security/web/config"
 	"gitlab.id.vin/vincart/golib-security/web/filter"
 	"gitlab.id.vin/vincart/golib-security/web/middleware"
-	coreConfig "gitlab.id.vin/vincart/golib/config"
 	"go.uber.org/fx"
 )
 
-type HttpSecurityAutoConfigIn struct {
-	fx.In
-	ConfigLoader coreConfig.Loader
+func HttpSecurityAutoConfig() fx.Option {
+	return fx.Options(
+		golib.EnablePropsAutoload(new(config.HttpSecurityProperties)),
+		fx.Provide(config.NewHttpSecurityProperties),
+		fx.Provide(NewHttpSecurity),
+		fx.Invoke(RegisterHttpSecurity),
+	)
 }
 
-type HttpSecurityAutoConfigOut struct {
+type HttpSecurityOut struct {
 	fx.Out
-	SecurityProperties    *config.HttpSecurityProperties
 	AuthProviderManager   *authen.ProviderManager
 	AccessDecisionManager authorization.AccessDecisionManager
 }
 
-func NewHttpSecurityAutoConfig(in HttpSecurityAutoConfigIn) (HttpSecurityAutoConfigOut, error) {
-	out := HttpSecurityAutoConfigOut{}
-	props, err := config.NewHttpSecurityProperties(in.ConfigLoader)
-	if err != nil {
-		return out, err
+func NewHttpSecurity() HttpSecurityOut {
+	return HttpSecurityOut{
+		AuthProviderManager:   authen.NewProviderManager(),
+		AccessDecisionManager: authorization.NewAffirmativeBasedADM(authorization.NewRoleVoterADV()),
 	}
-	out.SecurityProperties = props
-	out.AuthProviderManager = authen.NewProviderManager()
-	out.AccessDecisionManager = authorization.NewAffirmativeBasedADM(authorization.NewRoleVoterADV())
-	return out, nil
 }
 
-type RegisterHttpSecurityAutoConfigIn struct {
+type RegisterHttpSecurityIn struct {
 	fx.In
 	App                   *golib.App
 	SecurityProperties    *config.HttpSecurityProperties
@@ -45,7 +42,7 @@ type RegisterHttpSecurityAutoConfigIn struct {
 	AuthenticationFilters []filter.AuthenticationFilter `group:"authentication_filter"`
 }
 
-func RegisterHttpSecurityAutoConfig(in RegisterHttpSecurityAutoConfigIn) error {
+func RegisterHttpSecurity(in RegisterHttpSecurityIn) error {
 	if len(in.AuthenticationFilters) == 0 {
 		return errors.New("no authentication filters are provided, please provide at least one")
 	}

@@ -3,14 +3,16 @@ package golibsec
 import (
 	"gitlab.id.vin/vincart/golib"
 	secHttpClient "gitlab.id.vin/vincart/golib-security/web/client"
-	"gitlab.id.vin/vincart/golib/config"
 	"gitlab.id.vin/vincart/golib/web/client"
 	"go.uber.org/fx"
 )
 
-type NewSecuredHttpClientIn struct {
-	fx.In
-	ConfigLoader config.Loader
+func SecuredHttpClientAutoConfig() fx.Option {
+	return fx.Options(
+		golib.EnablePropsAutoload(new(secHttpClient.SecurityProperties)),
+		fx.Provide(secHttpClient.NewSecurityProperties),
+		fx.Provide(NewSecuredHttpClient),
+	)
 }
 
 type NewSecuredHttpClientOut struct {
@@ -18,14 +20,10 @@ type NewSecuredHttpClientOut struct {
 	Wrapper golib.ContextualHttpClientWrapper `group:"contextual_http_client_wrapper"`
 }
 
-func NewSecuredHttpClient(in NewSecuredHttpClientIn) NewSecuredHttpClientOut {
+func NewSecuredHttpClient(props *secHttpClient.SecurityProperties) NewSecuredHttpClientOut {
 	return NewSecuredHttpClientOut{
 		Wrapper: func(client client.ContextualHttpClient) (client.ContextualHttpClient, error) {
-			securityProps, err := secHttpClient.NewSecurityProperties(in.ConfigLoader)
-			if err != nil {
-				return nil, err
-			}
-			return secHttpClient.NewSecuredHttpClient(client, securityProps), nil
+			return secHttpClient.NewSecuredHttpClient(client, props), nil
 		},
 	}
 }

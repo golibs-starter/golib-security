@@ -8,21 +8,18 @@ import (
 	"strings"
 )
 
+func NewHttpSecurityProperties(loader config.Loader) (*HttpSecurityProperties, error) {
+	props := HttpSecurityProperties{}
+	err := loader.Bind(&props)
+	return &props, err
+}
+
 type HttpSecurityProperties struct {
 	PredefinedPublicUrls []string
 	PublicUrls           []string
 	ProtectedUrls        []*UrlToRole
 	BasicAuth            *BasicSecurityProperties
 	Jwt                  *JwtSecurityProperties
-}
-
-func NewHttpSecurityProperties(loader config.Loader) (*HttpSecurityProperties, error) {
-	props := HttpSecurityProperties{}
-	err := loader.Bind(&props)
-	if err != nil {
-		return nil, err
-	}
-	return &props, nil
 }
 
 func (h HttpSecurityProperties) Prefix() string {

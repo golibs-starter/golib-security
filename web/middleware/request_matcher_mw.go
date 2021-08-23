@@ -13,30 +13,34 @@ import (
 func RequestMatcher(properties *config.HttpSecurityProperties, contextPath string) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			protectedUrl := getRequestMatched(contextPath, r, properties.ProtectedUrls)
-			if protectedUrl == nil {
-				publicUrls := append(properties.PredefinedPublicUrls, properties.PublicUrls...)
-				if matchesPublicRequest(contextPath, r, publicUrls) {
-					log.Debug(r.Context(), "Url is in configured public url, skip")
-					next.ServeHTTP(w, r)
-					return
-				}
-				log.Debug(r.Context(), "Forbidden, no protected url matched")
+			if !strings.HasPrefix(r.URL.RequestURI(), contextPath) {
+				log.Debug(r.Context(), "Forbidden, uri is not in context path")
 				response.WriteError(w, exception.Forbidden)
 				return
 			}
-			log.Debug(r.Context(), "Matched protection URL pattern [%s], method [%s], roles [%v]",
-				protectedUrl.UrlPattern, protectedUrl.Method, protectedUrl.Roles)
-			next.ServeHTTP(w, secContext.AttachMatchedUrlProtection(r, protectedUrl))
+			uri := removeContextPath(r.URL.RequestURI(), contextPath)
+			if protectedUrl := getRequestMatched(r.Method, uri, properties.ProtectedUrls); protectedUrl != nil {
+				log.Debug(r.Context(), "Matched protection URL pattern [%s], method [%s], roles [%v]",
+					protectedUrl.UrlPattern, protectedUrl.Method, protectedUrl.Roles)
+				next.ServeHTTP(w, secContext.AttachMatchedUrlProtection(r, protectedUrl))
+				return
+			}
+			publicUrls := append(properties.PredefinedPublicUrls, properties.PublicUrls...)
+			if matchesPublicRequest(uri, publicUrls) {
+				log.Debug(r.Context(), "Url is in configured public url, skip")
+				next.ServeHTTP(w, r)
+				return
+			}
+			log.Debug(r.Context(), "Forbidden, url is not found in security config")
+			response.WriteError(w, exception.Forbidden)
 		})
 	}
 }
 
-func getRequestMatched(contextPath string, r *http.Request, protectedUrls []*config.UrlToRole) *config.UrlToRole {
+func getRequestMatched(method string, uri string, protectedUrls []*config.UrlToRole) *config.UrlToRole {
 	if len(protectedUrls) > 0 {
-		uri := removeContextPath(r.URL.RequestURI(), contextPath)
 		for _, protectedUrl := range protectedUrls {
-			if protectedUrl.Method != "" && protectedUrl.Method != r.Method {
+			if protectedUrl.Method != "" && protectedUrl.Method != method {
 				continue
 			}
 			if protectedUrl.UrlRegexp() != nil && protectedUrl.UrlRegexp().MatchString(uri) {
@@ -47,8 +51,7 @@ func getRequestMatched(contextPath string, r *http.Request, protectedUrls []*con
 	return nil
 }
 
-func matchesPublicRequest(contextPath string, r *http.Request, configuredPublicUrls []string) bool {
-	uri := removeContextPath(r.URL.RequestURI(), contextPath)
+func matchesPublicRequest(uri string, configuredPublicUrls []string) bool {
 	return containsOrStartsString(configuredPublicUrls, uri)
 }
 

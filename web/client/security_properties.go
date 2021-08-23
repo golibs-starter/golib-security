@@ -6,16 +6,14 @@ import (
 	"regexp"
 )
 
-type SecurityProperties struct {
-	BasicAuth []*BasicAuthProperties
-}
-
 func NewSecurityProperties(loader config.Loader) (*SecurityProperties, error) {
 	props := SecurityProperties{}
-	if err := loader.Bind(&props); err != nil {
-		return nil, err
-	}
-	return &props, nil
+	err := loader.Bind(&props)
+	return &props, err
+}
+
+type SecurityProperties struct {
+	BasicAuth []*BasicAuthProperties
 }
 
 func (h SecurityProperties) Prefix() string {

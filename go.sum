@@ -256,6 +256,8 @@ gitlab.id.vin/vincart/golib v0.2.3 h1:wiygkUO/Qd3oo34ZCaHu+yvkS5jELnBFVN5E1xxHGI
 gitlab.id.vin/vincart/golib v0.2.3/go.mod h1:pe7KLKVdyov5Otw3O2wMcWrdldC3nZ7RT1fEy36coNs=
 gitlab.id.vin/vincart/golib v0.2.6 h1:6rOAeQvz07V8cBIJctImB+jvQz7DqwBsEF4FCK9w4ao=
 gitlab.id.vin/vincart/golib v0.2.6/go.mod h1:B4UbJ9E5BzBkQA6v+4mdbnBzMBDvzEuaVDSKMlXQy9s=
+gitlab.id.vin/vincart/golib v0.2.7 h1:5mfKAfgOEisuBPxPf01FhuJBiGkogKqbnPBQiu8pTKU=
+gitlab.id.vin/vincart/golib v0.2.7/go.mod h1:B4UbJ9E5BzBkQA6v+4mdbnBzMBDvzEuaVDSKMlXQy9s=
 go.etcd.io/etcd/api/v3 v3.5.0/go.mod h1:cbVKeC6lCfl7j/8jBhAK6aIYO9XOjdptoxU/nLQcPvs=
 go.etcd.io/etcd/client/pkg/v3 v3.5.0/go.mod h1:IJHfcCEKxYu1Os13ZdwCwIUTUVGYTSAM3YSwc9/Ac1g=
 go.etcd.io/etcd/client/v2 v2.305.0/go.mod h1:h9puh54ZTgAKtEbut2oe9P4L/oqKCVB6xsXlzd7alYQ=

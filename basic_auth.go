@@ -12,24 +12,25 @@ import (
 	"go.uber.org/fx"
 )
 
-type NewBasicAuthenticationFilterIn struct {
+func BasicAuthOpt() fx.Option {
+	return fx.Provide(fx.Annotated{
+		Group:  "authentication_filter",
+		Target: NewBasicAuthFilter,
+	})
+}
+
+type BasicAuthFilterIn struct {
 	fx.In
 	SecurityProperties  *config.HttpSecurityProperties
 	AuthProviderManager *authen.ProviderManager
 }
 
-type NewBasicAuthenticationFilterOut struct {
-	fx.Out
-	Filter filter.AuthenticationFilter `group:"authentication_filter"`
-}
-
-func NewBasicAuthenticationFilter(in NewBasicAuthenticationFilterIn) (NewBasicAuthenticationFilterOut, error) {
-	out := NewBasicAuthenticationFilterOut{}
+func NewBasicAuthFilter(in BasicAuthFilterIn) (filter.AuthenticationFilter, error) {
 	if in.SecurityProperties.BasicAuth == nil {
-		return out, errors.New("missing Basic Auth config")
+		return nil, errors.New("missing Basic Auth config")
 	}
 	if in.SecurityProperties.BasicAuth.Users == nil || len(in.SecurityProperties.BasicAuth.Users) == 0 {
-		return out, errors.New("missing Basic Auth Users config")
+		return nil, errors.New("missing Basic Auth Users config")
 	}
 	users := getSimpleUsersFromBasicAuthUsers(in.SecurityProperties.BasicAuth.Users)
 	userDetailsService := user.NewInMemUserDetailsService(users)
@@ -37,10 +38,9 @@ func NewBasicAuthenticationFilter(in NewBasicAuthenticationFilterIn) (NewBasicAu
 	in.AuthProviderManager.AddProvider(authen.NewUsernamePasswordAuthProvider(userDetailsService, passwordEncoder))
 	basicAuthFilter, err := filter.BasicAuthSecurityFilter()
 	if err != nil {
-		return out, fmt.Errorf("cannot init Basic Auth Security Filter: [%v]", err)
+		return nil, fmt.Errorf("cannot init Basic Auth Security Filter: [%v]", err)
 	}
-	out.Filter = basicAuthFilter
-	return out, nil
+	return basicAuthFilter, nil
 }
 
 func getSimpleUsersFromBasicAuthUsers(basicUsers []*config.BasicAuthProperties) []user.Details {

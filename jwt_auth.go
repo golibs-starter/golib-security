@@ -9,27 +9,27 @@ import (
 	"go.uber.org/fx"
 )
 
-type NewJwtAuthenticationFilterIn struct {
+func JwtAuthFilterOpt() fx.Option {
+	return fx.Provide(fx.Annotated{
+		Group:  "authentication_filter",
+		Target: NewJwtAuthFilter,
+	})
+}
+
+type JwtAuthFilterIn struct {
 	fx.In
 	SecurityProperties  *config.HttpSecurityProperties
 	AuthProviderManager *authen.ProviderManager
 }
 
-type NewJwtAuthenticationFilterOut struct {
-	fx.Out
-	Filter filter.AuthenticationFilter `group:"authentication_filter"`
-}
-
-func NewJwtAuthenticationFilter(in NewJwtAuthenticationFilterIn) (NewJwtAuthenticationFilterOut, error) {
-	out := NewJwtAuthenticationFilterOut{}
+func NewJwtAuthFilter(in JwtAuthFilterIn) (filter.AuthenticationFilter, error) {
 	if in.SecurityProperties.Jwt == nil {
-		return out, errors.New("missing JWT Auth config")
+		return nil, errors.New("missing JWT Auth config")
 	}
 	in.AuthProviderManager.AddProvider(authen.NewJwtAuthProvider())
 	jwtFilter, err := filter.JwtAuthSecurityFilter(in.SecurityProperties.Jwt)
 	if err != nil {
-		return NewJwtAuthenticationFilterOut{}, fmt.Errorf("cannot init JWT Security Filter: [%v]", err)
+		return nil, fmt.Errorf("cannot init JWT Security Filter: [%v]", err)
 	}
-	out.Filter = jwtFilter
-	return out, nil
+	return jwtFilter, nil
 }

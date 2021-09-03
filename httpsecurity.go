@@ -11,7 +11,7 @@ import (
 	"go.uber.org/fx"
 )
 
-func HttpSecurityAutoConfig() fx.Option {
+func HttpSecurityOpt() fx.Option {
 	return fx.Options(
 		golib.EnablePropsAutoload(new(config.HttpSecurityProperties)),
 		fx.Provide(config.NewHttpSecurityProperties),

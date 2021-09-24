@@ -13,8 +13,7 @@ import (
 
 func HttpSecurityOpt() fx.Option {
 	return fx.Options(
-		golib.EnablePropsAutoload(new(config.HttpSecurityProperties)),
-		fx.Provide(config.NewHttpSecurityProperties),
+		golib.ProvideProps(config.NewHttpSecurityProperties),
 		fx.Provide(NewHttpSecurity),
 		fx.Invoke(RegisterHttpSecurity),
 	)

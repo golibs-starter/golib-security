@@ -9,8 +9,7 @@ import (
 
 func SecuredHttpClientOpt() fx.Option {
 	return fx.Options(
-		golib.EnablePropsAutoload(new(secHttpClient.SecurityProperties)),
-		fx.Provide(secHttpClient.NewSecurityProperties),
+		golib.ProvideProps(secHttpClient.NewSecurityProperties),
 		fx.Provide(fx.Annotated{
 			Group:  "contextual_http_client_wrapper",
 			Target: NewSecuredHttpClient,

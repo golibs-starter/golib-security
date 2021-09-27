@@ -18,8 +18,8 @@ type HttpSecurityProperties struct {
 	PredefinedPublicUrls []string
 	PublicUrls           []string
 	ProtectedUrls        []*UrlToRole
-	BasicAuth            *BasicSecurityProperties
-	Jwt                  *JwtSecurityProperties
+	BasicAuth            *BasicSecurityProperties `default:"{}"`
+	Jwt                  *JwtSecurityProperties   `default:"{}"`
 }
 
 func (h HttpSecurityProperties) Prefix() string {

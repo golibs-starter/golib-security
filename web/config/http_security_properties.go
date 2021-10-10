@@ -35,15 +35,6 @@ func (h *HttpSecurityProperties) PostBinding() error {
 			}
 		}
 	}
-
-	// Replace placeholder from environment for basic auth user
-	if h.BasicAuth != nil && h.BasicAuth.Users != nil {
-		for _, user := range h.BasicAuth.Users {
-			if err := h.replacePlaceholderBasicAuthUser(user); err != nil {
-				return fmt.Errorf("cannot replace placeholder for basic auth, error [%v]", err)
-			}
-		}
-	}
 	return nil
 }
 
@@ -70,21 +61,6 @@ func (h HttpSecurityProperties) validateRoles(roles []string) error {
 				authorization.RolePrefix, role)
 		}
 	}
-	return nil
-}
-
-func (h HttpSecurityProperties) replacePlaceholderBasicAuthUser(user *BasicAuthProperties) error {
-	newUsername, err := config.ReplacePlaceholderValue(user.Username)
-	if err != nil {
-		return fmt.Errorf("replace placeholder for username error [%v]", err)
-	}
-	user.Username = newUsername.(string)
-
-	newPassword, err := config.ReplacePlaceholderValue(user.Password)
-	if err != nil {
-		return fmt.Errorf("replace placeholder for password error [%v]", err)
-	}
-	user.Password = newPassword.(string)
 	return nil
 }
 

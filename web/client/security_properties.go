@@ -28,26 +28,7 @@ func (h *SecurityProperties) PostBinding() error {
 				basicAuth.UrlMatch, err)
 		}
 		basicAuth.urlRegexp = urlRegexp
-
-		if err := h.replacePlaceholderBasicAuthUser(basicAuth); err != nil {
-			return fmt.Errorf("cannot replace placeholder for http client basic auth, error [%v]", err)
-		}
 	}
-	return nil
-}
-
-func (h SecurityProperties) replacePlaceholderBasicAuthUser(user *BasicAuthProperties) error {
-	newUsername, err := config.ReplacePlaceholderValue(user.Username)
-	if err != nil {
-		return fmt.Errorf("replace placeholder for username error [%v]", err)
-	}
-	user.Username = newUsername.(string)
-
-	newPassword, err := config.ReplacePlaceholderValue(user.Password)
-	if err != nil {
-		return fmt.Errorf("replace placeholder for password error [%v]", err)
-	}
-	user.Password = newPassword.(string)
 	return nil
 }
 

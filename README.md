@@ -45,8 +45,8 @@ func main() {
     // When you want to wrap default http client by a secured layer
     golibsec.SecuredHttpClientOpt(),
 	
-	// Example using http client
-	fx.Provide(NewExampleService),
+    // Example using http client
+    fx.Provide(NewExampleService),
   }
 }
 

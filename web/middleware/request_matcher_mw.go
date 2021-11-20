@@ -25,8 +25,7 @@ func RequestMatcher(properties *config.HttpSecurityProperties, contextPath strin
 				next.ServeHTTP(w, secContext.AttachMatchedUrlProtection(r, protectedUrl))
 				return
 			}
-			publicUrls := append(properties.PredefinedPublicUrls, properties.PublicUrls...)
-			if matchesPublicRequest(uri, publicUrls) {
+			if matchesPublicRequest(uri, properties.PublicUrls) {
 				log.Debug(r.Context(), "Url is in configured public url, skip")
 				next.ServeHTTP(w, r)
 				return

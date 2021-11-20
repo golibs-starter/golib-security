@@ -15,11 +15,10 @@ func NewHttpSecurityProperties(loader config.Loader) (*HttpSecurityProperties, e
 }
 
 type HttpSecurityProperties struct {
-	PredefinedPublicUrls []string
-	PublicUrls           []string
-	ProtectedUrls        []*UrlToRole
-	BasicAuth            *BasicSecurityProperties `default:"{}"`
-	Jwt                  *JwtSecurityProperties   `default:"{}"`
+	PublicUrls    []string
+	ProtectedUrls []*UrlToRole
+	BasicAuth     *BasicSecurityProperties `default:"{}"`
+	Jwt           *JwtSecurityProperties   `default:"{}"`
 }
 
 func (h HttpSecurityProperties) Prefix() string {

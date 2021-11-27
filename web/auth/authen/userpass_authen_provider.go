@@ -2,8 +2,8 @@ package authen
 
 import (
 	"errors"
-	"gitlab.id.vin/vincart/golib-security/crypto"
-	"gitlab.id.vin/vincart/golib-security/web/auth/user"
+	"gitlab.com/golibs-starter/golib-security/crypto"
+	"gitlab.com/golibs-starter/golib-security/web/auth/user"
 )
 
 type UsernamePasswordAuthProvider struct {

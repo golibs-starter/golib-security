@@ -1,8 +1,8 @@
 package authen
 
 import (
-	"gitlab.id.vin/vincart/golib-security/web/auth/authorization/authority"
-	"gitlab.id.vin/vincart/golib-security/web/auth/user"
+	"gitlab.com/golibs-starter/golib-security/web/auth/authorization/authority"
+	"gitlab.com/golibs-starter/golib-security/web/auth/user"
 )
 
 type JwtTokenAuthentication struct {

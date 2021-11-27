@@ -2,9 +2,9 @@ package context
 
 import (
 	"context"
-	"gitlab.id.vin/vincart/golib-security/web/auth/authen"
-	"gitlab.id.vin/vincart/golib-security/web/auth/user"
-	"gitlab.id.vin/vincart/golib-security/web/config"
+	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
+	"gitlab.com/golibs-starter/golib-security/web/auth/user"
+	"gitlab.com/golibs-starter/golib-security/web/config"
 	"net/http"
 )
 

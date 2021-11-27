@@ -1,15 +1,15 @@
 package middleware
 
 import (
-	"gitlab.id.vin/vincart/golib-security/utils"
-	"gitlab.id.vin/vincart/golib-security/web/auth/authen"
-	"gitlab.id.vin/vincart/golib-security/web/auth/authorization"
-	"gitlab.id.vin/vincart/golib-security/web/constant"
-	secContext "gitlab.id.vin/vincart/golib-security/web/context"
-	"gitlab.id.vin/vincart/golib-security/web/filter"
-	"gitlab.id.vin/vincart/golib/exception"
-	"gitlab.id.vin/vincart/golib/web/log"
-	"gitlab.id.vin/vincart/golib/web/response"
+	"gitlab.com/golibs-starter/golib-security/utils"
+	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
+	"gitlab.com/golibs-starter/golib-security/web/auth/authorization"
+	"gitlab.com/golibs-starter/golib-security/web/constant"
+	secContext "gitlab.com/golibs-starter/golib-security/web/context"
+	"gitlab.com/golibs-starter/golib-security/web/filter"
+	"gitlab.com/golibs-starter/golib/exception"
+	"gitlab.com/golibs-starter/golib/web/log"
+	"gitlab.com/golibs-starter/golib/web/response"
 	"net/http"
 )
 

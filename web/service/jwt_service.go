@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"gitlab.id.vin/vincart/golib-security/web/auth/authen"
+	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
 	"net/http"
 )
 

@@ -1,6 +1,6 @@
 package authen
 
-import "gitlab.id.vin/vincart/golib-security/web/auth/authorization/authority"
+import "gitlab.com/golibs-starter/golib-security/web/auth/authorization/authority"
 
 type UsernamePasswordAuthentication struct {
 	*BaseAuthentication

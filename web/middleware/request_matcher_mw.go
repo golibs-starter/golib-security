@@ -1,11 +1,11 @@
 package middleware
 
 import (
-	"gitlab.id.vin/vincart/golib-security/web/config"
-	secContext "gitlab.id.vin/vincart/golib-security/web/context"
-	"gitlab.id.vin/vincart/golib/exception"
-	"gitlab.id.vin/vincart/golib/web/log"
-	"gitlab.id.vin/vincart/golib/web/response"
+	"gitlab.com/golibs-starter/golib-security/web/config"
+	secContext "gitlab.com/golibs-starter/golib-security/web/context"
+	"gitlab.com/golibs-starter/golib/exception"
+	"gitlab.com/golibs-starter/golib/web/log"
+	"gitlab.com/golibs-starter/golib/web/response"
 	"net/http"
 	"strings"
 )

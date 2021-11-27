@@ -1,7 +1,7 @@
 package user
 
 import (
-	"gitlab.id.vin/vincart/golib/exception"
+	"gitlab.com/golibs-starter/golib/exception"
 	"net/http"
 )
 

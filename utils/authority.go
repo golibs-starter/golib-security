@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"gitlab.id.vin/vincart/golib-security/web/auth/authorization"
-	"gitlab.id.vin/vincart/golib-security/web/auth/authorization/authority"
+	"gitlab.com/golibs-starter/golib-security/web/auth/authorization"
+	"gitlab.com/golibs-starter/golib-security/web/auth/authorization/authority"
 )
 
 func ConvertRolesToSimpleAuthorities(roles []string) []authority.GrantedAuthority {

@@ -1,9 +1,9 @@
 package golibsec
 
 import (
-	"gitlab.id.vin/vincart/golib"
-	secHttpClient "gitlab.id.vin/vincart/golib-security/web/client"
-	"gitlab.id.vin/vincart/golib/web/client"
+	"gitlab.com/golibs-starter/golib"
+	secHttpClient "gitlab.com/golibs-starter/golib-security/web/client"
+	"gitlab.com/golibs-starter/golib/web/client"
 	"go.uber.org/fx"
 )
 

@@ -2,8 +2,8 @@ package config
 
 import (
 	"fmt"
-	"gitlab.id.vin/vincart/golib-security/web/auth/authorization"
-	"gitlab.id.vin/vincart/golib/config"
+	"gitlab.com/golibs-starter/golib-security/web/auth/authorization"
+	"gitlab.com/golibs-starter/golib/config"
 	"regexp"
 	"strings"
 )

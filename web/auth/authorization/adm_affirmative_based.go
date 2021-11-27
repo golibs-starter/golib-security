@@ -1,8 +1,8 @@
 package authorization
 
 import (
-	"gitlab.id.vin/vincart/golib-security/web/auth/authen"
-	"gitlab.id.vin/vincart/golib-security/web/auth/authorization/authority"
+	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
+	"gitlab.com/golibs-starter/golib-security/web/auth/authorization/authority"
 )
 
 type AffirmativeBasedADM struct {

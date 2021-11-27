@@ -2,7 +2,7 @@ package golibsec
 
 import (
 	"github.com/stretchr/testify/assert"
-	"gitlab.id.vin/vincart/golib-security/web/config"
+	"gitlab.com/golibs-starter/golib-security/web/config"
 	"testing"
 )
 

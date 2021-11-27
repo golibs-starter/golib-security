@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
-	"gitlab.id.vin/vincart/golib-security/web/auth/authen"
-	"gitlab.id.vin/vincart/golib-security/web/config"
-	"gitlab.id.vin/vincart/golib-security/web/constant"
-	"gitlab.id.vin/vincart/golib-security/web/service"
-	"gitlab.id.vin/vincart/golib/web/log"
+	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
+	"gitlab.com/golibs-starter/golib-security/web/config"
+	"gitlab.com/golibs-starter/golib-security/web/constant"
+	"gitlab.com/golibs-starter/golib-security/web/service"
+	"gitlab.com/golibs-starter/golib/web/log"
 	"net/http"
 )
 

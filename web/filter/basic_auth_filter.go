@@ -3,9 +3,9 @@ package filter
 import (
 	"encoding/base64"
 	"github.com/pkg/errors"
-	"gitlab.id.vin/vincart/golib-security/web/auth/authen"
-	"gitlab.id.vin/vincart/golib-security/web/constant"
-	"gitlab.id.vin/vincart/golib/web/log"
+	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
+	"gitlab.com/golibs-starter/golib-security/web/constant"
+	"gitlab.com/golibs-starter/golib/web/log"
 	"net/http"
 	"strings"
 )

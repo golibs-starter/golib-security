@@ -9,12 +9,12 @@ Security solutions for Golang project. Includes:
 
 ### Setup instruction
 
-Base setup, see [GoLib Instruction](https://gitlab.id.vin/vincart/golib/-/blob/develop/README.md)
+Base setup, see [GoLib Instruction](https://gitlab.com/golibs-starter/golib/-/blob/develop/README.md)
 
 Both `go get` and `go mod` are supported.
 
 ```shell
-go get gitlab.id.vin/vincart/golib-security
+go get gitlab.com/golibs-starter/golib-security
 ```
 
 ### Usage
@@ -25,8 +25,8 @@ Using `fx.Option` to include dependencies for injection.
 package main
 
 import (
-  "gitlab.id.vin/vincart/golib-security"
-  "gitlab.id.vin/vincart/golib/web/client"
+  "gitlab.com/golibs-starter/golib-security"
+  "gitlab.com/golibs-starter/golib/web/client"
   "go.uber.org/fx"
 )
 

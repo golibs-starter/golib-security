@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	"gitlab.id.vin/vincart/golib-security/web/auth/authen"
-	"gitlab.id.vin/vincart/golib-security/web/auth/user"
-	secContext "gitlab.id.vin/vincart/golib-security/web/context"
-	"gitlab.id.vin/vincart/golib/web/context"
+	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
+	"gitlab.com/golibs-starter/golib-security/web/auth/user"
+	secContext "gitlab.com/golibs-starter/golib-security/web/context"
+	"gitlab.com/golibs-starter/golib/web/context"
 	"net/http"
 )
 

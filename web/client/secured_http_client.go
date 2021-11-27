@@ -2,7 +2,7 @@ package client
 
 import (
 	"context"
-	"gitlab.id.vin/vincart/golib/web/client"
+	"gitlab.com/golibs-starter/golib/web/client"
 	"net/http"
 )
 

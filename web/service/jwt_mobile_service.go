@@ -23,7 +23,7 @@ func (j JwtMobileService) GetAuthentication(token *jwt.Token, request *http.Requ
 		return nil, errors.New("missing jwt subject in the token")
 	}
 	authorities := []authority.GrantedAuthority{authority.NewSimpleGrantedAuthority(j.role())}
-	userDetails := user.NewVinIdUserDetails(userId, authorities)
+	userDetails := user.NewSimpleUserDetails(userId, authorities)
 	return authen.NewJwtTokenAuthentication(userDetails, authorities), nil
 }
 

@@ -50,7 +50,7 @@ func getSimpleUsersFromBasicAuthUsers(basicUsers []*config.BasicAuthProperties) 
 	}
 	for _, basicUser := range basicUsers {
 		authorities := utils.ConvertRolesToSimpleAuthorities(basicUser.Roles)
-		users = append(users, user.NewSimpleUserDetails(basicUser.Username, basicUser.Password, authorities))
+		users = append(users, user.NewBasicUserDetails(basicUser.Username, basicUser.Password, authorities))
 	}
 	return users
 }

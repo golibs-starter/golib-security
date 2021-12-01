@@ -24,7 +24,7 @@ func setSecurityAttributes(r *http.Request, authentication authen.Authentication
 	userDetails := authentication.Details()
 	requestAttributes := context.GetRequestAttributes(r.Context())
 	if requestAttributes != nil {
-		if u, ok := userDetails.(*user.VinIdUserDetails); ok {
+		if u, ok := userDetails.(*user.SimpleUserDetails); ok {
 			requestAttributes.SecurityAttributes.UserId = u.Username()
 			return
 		}

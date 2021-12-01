@@ -62,23 +62,10 @@ func NewExampleService(httpClient client.ContextualHttpClient) *ExampleService {
 ### Configuration
 
 ```yaml
-vinid:
+app:
   security:
-    http: # Configuration for HttpSecurityOpt()
-
-      jwt: # Required when using JwtAuthFilterOpt()
-        type: JWT_TOKEN_MOBILE # Currently, we support JWT_TOKEN_MOBILE
-        publicKey: | # Public Key to verify JWT token
-          -----BEGIN PUBLIC KEY-----
-          MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgE...
-          -----END PUBLIC KEY-----
-
-      basicAuth: # Required when using BasicAuthOpt()
-        users: # List of users with roles for basic auth
-          - { username: "internal_service1", password: "secret", roles: [ "INTERNAL_SERVICE" ] }
-          # Or you can use placeholder with format ${ENV_NAME}, it will be replaced by environment var
-          - { username: "internal_service2", password: "${EXPOSED_INTERNAL_SERVICE_PWD}", roles: [ "INTERNAL_SERVICE" ] }
-      
+    # Configuration for HttpSecurityOpt()
+    http:
       publicUrls: # Define urls can be accessed without authentication
         - /actuator/health
         - /actuator/info
@@ -88,7 +75,23 @@ vinid:
         - { urlPattern: "/v1/api-with-jwt-auth", method: POST, roles: [ "MOBILE_APP" ], unauthorizedWwwAuthenticateHeaders: [ "Bearer" ] }
         - { urlPattern: "/v1/api-with-basic-auth", method: POST, roles: [ "INTERNAL_SERVICE" ], unauthorizedWwwAuthenticateHeaders: [ "Basic" ] }
 
-      client: # Required when using SecuredHttpClientOpt()
+      # Required when using JwtAuthFilterOpt()
+      jwt:
+        type: JWT_TOKEN_MOBILE # Currently, we support JWT_TOKEN_MOBILE
+        publicKey: | # Public Key to verify JWT token
+          -----BEGIN PUBLIC KEY-----
+          MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgE...
+          -----END PUBLIC KEY-----
+
+      # Required when using BasicAuthOpt()
+      basicAuth:
+        users: # List of users with roles for basic auth
+          - { username: "internal_service1", password: "secret", roles: [ "INTERNAL_SERVICE" ] }
+          # Or you can use placeholder with format ${ENV_NAME}, it will be replaced by environment var
+          - { username: "internal_service2", password: "${EXPOSED_INTERNAL_SERVICE_PWD}", roles: [ "INTERNAL_SERVICE" ] }
+
+      # Required when using SecuredHttpClientOpt()
+      client:
         basicAuth: # Define url with corresponding username password, these credentials will be auto attached to header before execute request.
           - { urlMatch: "https://foo.com/api/.*", username: "foo_user", password: "${FOO_SERVICE_PWD}" }
           - { urlMatch: "https://bar.com/api/.*", username: "bar_user", password: "${BAR_SERVICE_PWD}" }

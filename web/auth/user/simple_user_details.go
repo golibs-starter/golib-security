@@ -5,31 +5,22 @@ import (
 )
 
 type SimpleUserDetails struct {
-	username    string
-	password    string
+	userId      string
 	authorities []authority.GrantedAuthority
 }
 
-func NewSimpleUserDetails(
-	username string,
-	password string,
-	authorities []authority.GrantedAuthority,
-) *SimpleUserDetails {
-	return &SimpleUserDetails{
-		username:    username,
-		password:    password,
-		authorities: authorities,
-	}
+func NewSimpleUserDetails(userId string, authorities []authority.GrantedAuthority) *SimpleUserDetails {
+	return &SimpleUserDetails{userId: userId, authorities: authorities}
 }
 
-func (s SimpleUserDetails) Username() string {
-	return s.username
+func (v SimpleUserDetails) Username() string {
+	return v.userId
 }
 
-func (s SimpleUserDetails) Password() string {
-	return s.password
+func (v SimpleUserDetails) Password() string {
+	return ""
 }
 
-func (s SimpleUserDetails) Authorities() []authority.GrantedAuthority {
-	return s.authorities
+func (v SimpleUserDetails) Authorities() []authority.GrantedAuthority {
+	return v.authorities
 }

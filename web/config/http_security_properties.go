@@ -22,7 +22,7 @@ type HttpSecurityProperties struct {
 }
 
 func (h HttpSecurityProperties) Prefix() string {
-	return "vinid.security.http"
+	return "app.security.http"
 }
 
 func (h *HttpSecurityProperties) PostBinding() error {

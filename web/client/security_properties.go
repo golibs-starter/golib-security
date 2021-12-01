@@ -17,7 +17,7 @@ type SecurityProperties struct {
 }
 
 func (h SecurityProperties) Prefix() string {
-	return "vinid.security.http.client"
+	return "app.security.http.client"
 }
 
 func (h *SecurityProperties) PostBinding() error {

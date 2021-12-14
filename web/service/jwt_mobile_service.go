@@ -24,7 +24,7 @@ func (j JwtMobileService) GetAuthentication(token *jwt.Token, request *http.Requ
 	}
 	authorities := []authority.GrantedAuthority{authority.NewSimpleGrantedAuthority(j.role())}
 	userDetails := user.NewSimpleUserDetails(userId, authorities)
-	return authen.NewJwtTokenAuthentication(userDetails, authorities), nil
+	return authen.NewJwtTokenAuthentication(userDetails, authorities, mapClaims), nil
 }
 
 func (j JwtMobileService) role() string {

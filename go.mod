@@ -6,6 +6,6 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/pkg/errors v0.8.1
 	github.com/stretchr/testify v1.7.0
-	gitlab.id.vin/vincart/golib v0.9.8
+	gitlab.id.vin/vincart/golib v0.9.11
 	go.uber.org/fx v1.13.1
 )

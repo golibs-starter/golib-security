@@ -26,9 +26,10 @@ Using `fx.Option` to include dependencies for injection.
 package main
 
 import (
-  "gitlab.com/golibs-starter/golib-security"
-  "gitlab.com/golibs-starter/golib/web/client"
-  "go.uber.org/fx"
+	"gitlab.com/golibs-starter/golib-security"
+	"gitlab.com/golibs-starter/golib-security/testutil"
+	"gitlab.com/golibs-starter/golib/web/client"
+	"go.uber.org/fx"
 )
 
 func main() {
@@ -48,6 +49,21 @@ func main() {
 
 		// Example using http client
 		fx.Provide(NewExampleService),
+
+		// ==================== TEST UTILS =================
+		// A useful util to easy to generate jwt token for test.
+		// This option needs to come with the following configuration:
+		//
+		// app.security.http.jwt:
+		//     privateKey: | # Private key to generate JWT token
+		//	      -----BEGIN RSA PRIVATE KEY-----
+		//	      MIIEpAIBAAKCAQEAibfYgV1ACadMfuvl5VsRV0H/llbi+zB0f6kTSQ0VwzNR9eYb
+		//	      LSb3U5FtkHjBaULxK9Wk2btXvbSZ4HK0cdCf/FHnKpuPoguWOsHrQcVqxzN5XaR1
+		//	      zBSVNXIuxry3AXWq8DDJ/GGXdsxcr0xZ2NGn3GAj0op8cvENes88Wg==
+		//	      -----END RSA PRIVATE KEY-----
+		//
+		// Eg: https://gitlab.com/golibs-starter/golib-sample/-/tree/develop/src/public/testing/create_order_controller_test.go
+		golibsecTestUtil.JwtTestUtilOpt(),
 	}
 }
 

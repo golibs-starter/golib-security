@@ -3,8 +3,8 @@ package filter
 import (
 	"errors"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/dgrijalva/jwt-go/request"
+	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v4/request"
 	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
 	"gitlab.com/golibs-starter/golib-security/web/config"
 	"gitlab.com/golibs-starter/golib-security/web/constant"

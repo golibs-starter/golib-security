@@ -8,7 +8,7 @@ import (
 	secContext "gitlab.com/golibs-starter/golib-security/web/context"
 	"gitlab.com/golibs-starter/golib-security/web/filter"
 	"gitlab.com/golibs-starter/golib/exception"
-	"gitlab.com/golibs-starter/golib/web/log"
+	"gitlab.com/golibs-starter/golib/log"
 	"gitlab.com/golibs-starter/golib/web/response"
 	"net/http"
 )
@@ -20,9 +20,10 @@ func Auth(
 ) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			logger := log.WithCtx(r.Context())
 			matchedUrl := secContext.GetMatchedUrlProtection(r)
 			if matchedUrl == nil {
-				log.Debug(r.Context(), "Authentication is not required for this request, skip")
+				logger.Debug("Authentication is not required for this request, skip")
 				next.ServeHTTP(w, r)
 				return
 			}
@@ -31,7 +32,7 @@ func Auth(
 			filterChainHandler := filter.CreateAuthenticationHandler(filters, filter.UnauthorizedHandler)
 			authentication := filterChainHandler(w, r)
 			if authentication == nil {
-				log.Info(r.Context(), "Authentication is required to access this resource")
+				logger.Info("Authentication is required to access this resource")
 				writeAuthenticationDirective(w, matchedUrl.UnauthorizedWwwAuthenticateHeaders)
 				response.WriteError(w, exception.Unauthorized)
 				return
@@ -39,13 +40,13 @@ func Auth(
 
 			authentication, err := authManager.Authenticate(authentication)
 			if err != nil {
-				log.Info(r.Context(), "Authentication failed, error [%s]", err.Error())
+				logger.WithErrors(err).Info("Authentication failed")
 				response.WriteError(w, exception.Unauthorized)
 				return
 			}
 
 			if !authentication.Authenticated() {
-				log.Info(r.Context(), "Authentication failed, the request is unauthenticated")
+				logger.Info("Authentication failed, the request is unauthenticated")
 				response.WriteError(w, exception.Unauthorized)
 				return
 			}
@@ -53,9 +54,9 @@ func Auth(
 			restrictedAuthorities := utils.ConvertRolesToSimpleAuthorities(matchedUrl.Roles)
 			if err := accessDecisionManager.Decide(authentication, restrictedAuthorities); err != nil {
 				if _, ok := err.(exception.Exception); ok {
-					log.Info(r.Context(), "Authorization failed, error [%s]", err.Error())
+					logger.WithErrors(err).Info("Authorization failed")
 				} else {
-					log.Error(r.Context(), "Error when trying to authorize request, error [%v]", err)
+					logger.WithErrors(err).Error("Error when trying to authorize request")
 				}
 				response.WriteError(w, err)
 				return

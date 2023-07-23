@@ -9,7 +9,7 @@ import (
 	"gitlab.com/golibs-starter/golib-security/web/config"
 	"gitlab.com/golibs-starter/golib-security/web/constant"
 	"gitlab.com/golibs-starter/golib-security/web/service"
-	"gitlab.com/golibs-starter/golib/web/log"
+	"gitlab.com/golibs-starter/golib/log"
 	"net/http"
 )
 
@@ -26,16 +26,17 @@ func JwtAuthSecurityFilter(props *config.JwtSecurityProperties) (AuthenticationF
 	jwtParser := request.WithParser(&jwt.Parser{ValidMethods: []string{props.Algorithm}})
 	return func(next AuthenticationHandler) AuthenticationHandler {
 		return func(w http.ResponseWriter, r *http.Request) authen.Authentication {
+			logger := log.WithCtx(r.Context())
 			// Parse token from request
 			token, err := request.ParseFromRequest(r, jwtExtractor, jwtKeyFunc, jwtParser)
 			if err != nil {
-				log.Info(r.Context(), "Invalid JWT. Error [%s]", err.Error())
+				logger.WithErrors(err).Info("Invalid JWT")
 				return next(w, r)
 			}
 			// Get authentication by token
 			authentication, err := jwtService.GetAuthentication(token, r)
 			if err != nil {
-				log.Info(r.Context(), "Cannot get authentication. Error [%v]", err.Error())
+				logger.WithErrors(err).Info("Cannot get authentication")
 				return next(w, r)
 			}
 			return authentication

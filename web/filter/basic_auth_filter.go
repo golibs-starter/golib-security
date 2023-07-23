@@ -5,7 +5,7 @@ import (
 	"github.com/pkg/errors"
 	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
 	"gitlab.com/golibs-starter/golib-security/web/constant"
-	"gitlab.com/golibs-starter/golib/web/log"
+	"gitlab.com/golibs-starter/golib/log"
 	"net/http"
 	"strings"
 )
@@ -17,14 +17,15 @@ func BasicAuthSecurityFilter() (AuthenticationFilter, error) {
 		return func(w http.ResponseWriter, r *http.Request) authen.Authentication {
 			header := strings.TrimSpace(r.Header.Get(constant.HeaderAuthorization))
 			if header == "" || !startsWithBasicScheme(header) {
-				log.Debug(r.Context(), "Skip basic auth filter due by Authorization header is not starts with [%s]",
-					AuthorizationBasicScheme)
+				log.WithCtx(r.Context()).
+					Debugf("Skip basic auth filter due by Authorization header is not starts with [%s]",
+						AuthorizationBasicScheme)
 				return next(w, r)
 			}
 			token := extractTokenFromBasicHeader(header)
 			authentication, err := extractAuthenticationFromToken(token)
 			if err != nil {
-				log.Info(r.Context(), "Invalid Basic Auth Token. Error [%s]", err.Error())
+				log.WithCtx(r.Context()).WithErrors(err).Info("Invalid Basic Auth Token")
 				return next(w, r)
 			}
 			return authentication

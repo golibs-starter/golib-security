@@ -40,7 +40,7 @@ func Auth(
 
 			authentication, err := authManager.Authenticate(authentication)
 			if err != nil {
-				logger.WithErrors(err).Info("Authentication failed")
+				logger.WithError(err).Info("Authentication failed")
 				response.WriteError(w, exception.Unauthorized)
 				return
 			}
@@ -54,9 +54,9 @@ func Auth(
 			restrictedAuthorities := utils.ConvertRolesToSimpleAuthorities(matchedUrl.Roles)
 			if err := accessDecisionManager.Decide(authentication, restrictedAuthorities); err != nil {
 				if _, ok := err.(exception.Exception); ok {
-					logger.WithErrors(err).Info("Authorization failed")
+					logger.WithError(err).Info("Authorization failed")
 				} else {
-					logger.WithErrors(err).Error("Error when trying to authorize request")
+					logger.WithError(err).Error("Error when trying to authorize request")
 				}
 				response.WriteError(w, err)
 				return

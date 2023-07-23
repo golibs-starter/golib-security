@@ -30,13 +30,13 @@ func JwtAuthSecurityFilter(props *config.JwtSecurityProperties) (AuthenticationF
 			// Parse token from request
 			token, err := request.ParseFromRequest(r, jwtExtractor, jwtKeyFunc, jwtParser)
 			if err != nil {
-				logger.WithErrors(err).Info("Invalid JWT")
+				logger.WithError(err).Info("Invalid JWT")
 				return next(w, r)
 			}
 			// Get authentication by token
 			authentication, err := jwtService.GetAuthentication(token, r)
 			if err != nil {
-				logger.WithErrors(err).Info("Cannot get authentication")
+				logger.WithError(err).Info("Cannot get authentication")
 				return next(w, r)
 			}
 			return authentication

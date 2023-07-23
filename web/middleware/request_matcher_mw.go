@@ -4,7 +4,8 @@ import (
 	"gitlab.com/golibs-starter/golib-security/web/config"
 	secContext "gitlab.com/golibs-starter/golib-security/web/context"
 	"gitlab.com/golibs-starter/golib/exception"
-	"gitlab.com/golibs-starter/golib/web/log"
+	"gitlab.com/golibs-starter/golib/log"
+	"gitlab.com/golibs-starter/golib/log/field"
 	"gitlab.com/golibs-starter/golib/web/response"
 	"net/http"
 	"strings"
@@ -13,24 +14,29 @@ import (
 func RequestMatcher(properties *config.HttpSecurityProperties, contextPath string) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			logger := log.WithCtx(r.Context())
 			if !strings.HasPrefix(r.URL.RequestURI(), contextPath) {
-				log.Debug(r.Context(), "Forbidden, uri is not in context path")
+				logger.Debug("Forbidden, uri is not in context path")
 				response.WriteError(w, exception.Forbidden)
 				return
 			}
 			uri := removeContextPath(r.URL.RequestURI(), contextPath)
 			if protectedUrl := getRequestMatched(r.Method, uri, properties.ProtectedUrls); protectedUrl != nil {
-				log.Debug(r.Context(), "Matched protection URL pattern [%s], method [%s], roles [%v]",
-					protectedUrl.UrlPattern, protectedUrl.Method, protectedUrl.Roles)
+				logger.WithField(
+					field.Namespace("matched_url"),
+					field.String("pattern", protectedUrl.UrlPattern),
+					field.String("method", protectedUrl.Method),
+					field.Strings("roles", protectedUrl.Roles),
+				).Debug("Matched protection URL")
 				next.ServeHTTP(w, secContext.AttachMatchedUrlProtection(r, protectedUrl))
 				return
 			}
 			if matchesPublicRequest(uri, properties.PublicUrls) {
-				log.Debug(r.Context(), "Url is in configured public url, skip")
+				logger.Debug("Url is in configured public url, skip")
 				next.ServeHTTP(w, r)
 				return
 			}
-			log.Debug(r.Context(), "Forbidden, url is not found in security config")
+			logger.Debug("Forbidden, url is not found in security config")
 			response.WriteError(w, exception.Forbidden)
 		})
 	}

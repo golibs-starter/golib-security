@@ -3,9 +3,9 @@ package golibsec
 import (
 	"errors"
 	"fmt"
-	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
-	"gitlab.com/golibs-starter/golib-security/web/config"
-	"gitlab.com/golibs-starter/golib-security/web/filter"
+	"github.com/golibs-starter/golib-security/web/auth/authen"
+	"github.com/golibs-starter/golib-security/web/config"
+	"github.com/golibs-starter/golib-security/web/filter"
 	"go.uber.org/fx"
 )
 

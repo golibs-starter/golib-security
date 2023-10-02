@@ -3,9 +3,9 @@ package service
 import (
 	"errors"
 	"github.com/golang-jwt/jwt/v4"
-	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
-	"gitlab.com/golibs-starter/golib-security/web/auth/authorization/authority"
-	"gitlab.com/golibs-starter/golib-security/web/auth/user"
+	"github.com/golibs-starter/golib-security/web/auth/authen"
+	"github.com/golibs-starter/golib-security/web/auth/authorization/authority"
+	"github.com/golibs-starter/golib-security/web/auth/user"
 	"net/http"
 )
 

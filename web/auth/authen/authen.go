@@ -1,8 +1,8 @@
 package authen
 
 import (
-	"gitlab.com/golibs-starter/golib-security/web/auth/authorization/authority"
-	"gitlab.com/golibs-starter/golib-security/web/auth/user"
+	"github.com/golibs-starter/golib-security/web/auth/authorization/authority"
+	"github.com/golibs-starter/golib-security/web/auth/user"
 )
 
 type Authentication interface {

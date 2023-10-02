@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/golang-jwt/jwt/v4"
-	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
+	"github.com/golibs-starter/golib-security/web/auth/authen"
 	"net/http"
 )
 

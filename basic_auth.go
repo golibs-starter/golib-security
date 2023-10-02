@@ -3,12 +3,12 @@ package golibsec
 import (
 	"errors"
 	"fmt"
-	"gitlab.com/golibs-starter/golib-security/crypto"
-	"gitlab.com/golibs-starter/golib-security/utils"
-	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
-	"gitlab.com/golibs-starter/golib-security/web/auth/user"
-	"gitlab.com/golibs-starter/golib-security/web/config"
-	"gitlab.com/golibs-starter/golib-security/web/filter"
+	"github.com/golibs-starter/golib-security/crypto"
+	"github.com/golibs-starter/golib-security/utils"
+	"github.com/golibs-starter/golib-security/web/auth/authen"
+	"github.com/golibs-starter/golib-security/web/auth/user"
+	"github.com/golibs-starter/golib-security/web/config"
+	"github.com/golibs-starter/golib-security/web/filter"
 	"go.uber.org/fx"
 )
 

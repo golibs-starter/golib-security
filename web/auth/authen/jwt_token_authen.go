@@ -2,8 +2,8 @@ package authen
 
 import (
 	"github.com/golang-jwt/jwt/v4"
-	"gitlab.com/golibs-starter/golib-security/web/auth/authorization/authority"
-	"gitlab.com/golibs-starter/golib-security/web/auth/user"
+	"github.com/golibs-starter/golib-security/web/auth/authorization/authority"
+	"github.com/golibs-starter/golib-security/web/auth/user"
 )
 
 type JwtTokenAuthentication struct {

@@ -1,21 +1,27 @@
 # Golib Security
 
+> **Note**
+> We are moving out from [Gitlab](https://gitlab.com/golibs-starter). All packages are now migrated
+> to `github.com/golibs-starter/*`. Please consider updating.
+
+[![run tests](https://github.com/golibs-starter/golib-security/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/golibs-starter/golib-security/actions/workflows/ci.yml)
+
 Security solutions for Golang project, includes:
 
 * Authentication (inspired from **Spring Security**): JWT, Basic Auth
 * Authorization (inspired from **Spring Security**): RBAC
 * Http Client Security:
-	* Proxy
-	* Authentication
+    * Proxy
+    * Authentication
 
 ### Setup instruction
 
-Base setup, see [GoLib Instruction](https://gitlab.com/golibs-starter/golib/-/blob/develop/README.md)
+Base setup, see [GoLib Instruction](https://github.com/golibs-starter/golib#readme)
 
 Both `go get` and `go mod` are supported.
 
 ```shell
-go get gitlab.com/golibs-starter/golib-security
+go get github.com/golibs-starter/golib-security
 ```
 
 ### Usage
@@ -26,53 +32,53 @@ Using `fx.Option` to include dependencies for injection.
 package main
 
 import (
-	"gitlab.com/golibs-starter/golib-security"
-	"gitlab.com/golibs-starter/golib-security/testutil"
-	"gitlab.com/golibs-starter/golib/web/client"
-	"go.uber.org/fx"
+    "github.com/golibs-starter/golib-security"
+    "github.com/golibs-starter/golib-security/testutil"
+    "github.com/golibs-starter/golib/web/client"
+    "go.uber.org/fx"
 )
 
 func main() {
-	_ = []fx.Option{
+    _ = []fx.Option{
 
-		// When you want to enable http security for your application
-		golibsec.HttpSecurityOpt(),
+        // When you want to enable http security for your application
+        golibsec.HttpSecurityOpt(),
 
-		// When you want to register JWT authentication filter
-		golibsec.JwtAuthFilterOpt(),
+        // When you want to register JWT authentication filter
+        golibsec.JwtAuthFilterOpt(),
 
-		// When you want to register Basic authentication filter
-		golibsec.BasicAuthOpt(),
+        // When you want to register Basic authentication filter
+        golibsec.BasicAuthOpt(),
 
-		// When you want to wrap default http client by a secured layer
-		golibsec.SecuredHttpClientOpt(),
+        // When you want to wrap default http client by a secured layer
+        golibsec.SecuredHttpClientOpt(),
 
-		// Example using http client
-		fx.Provide(NewExampleService),
+        // Example using http client
+        fx.Provide(NewExampleService),
 
-		// ==================== TEST UTILS =================
-		// A useful util to easy to generate jwt token for test.
-		// This option needs to come with the following configuration:
-		//
-		// app.security.http.jwt:
-		//     privateKey: | # Private key to generate JWT token
-		//	      -----BEGIN RSA PRIVATE KEY-----
-		//	      MIIEpAIBAAKCAQEAibfYgV1ACadMfuvl5VsRV0H/llbi+zB0f6kTSQ0VwzNR9eYb
-		//	      LSb3U5FtkHjBaULxK9Wk2btXvbSZ4HK0cdCf/FHnKpuPoguWOsHrQcVqxzN5XaR1
-		//	      zBSVNXIuxry3AXWq8DDJ/GGXdsxcr0xZ2NGn3GAj0op8cvENes88Wg==
-		//	      -----END RSA PRIVATE KEY-----
-		//
-		// Eg: https://gitlab.com/golibs-starter/golib-sample/-/tree/develop/src/public/testing/create_order_controller_test.go
-		golibsecTestUtil.JwtTestUtilOpt(),
-	}
+        // ==================== TEST UTILS =================
+        // A useful util to easy to generate jwt token for test.
+        // This option needs to come with the following configuration:
+        //
+        // app.security.http.jwt:
+        //     privateKey: | # Private key to generate JWT token
+        //	      -----BEGIN RSA PRIVATE KEY-----
+        //	      MIIEpAIBAAKCAQEAibfYgV1ACadMfuvl5VsRV0H/llbi+zB0f6kTSQ0VwzNR9eYb
+        //	      LSb3U5FtkHjBaULxK9Wk2btXvbSZ4HK0cdCf/FHnKpuPoguWOsHrQcVqxzN5XaR1
+        //	      zBSVNXIuxry3AXWq8DDJ/GGXdsxcr0xZ2NGn3GAj0op8cvENes88Wg==
+        //	      -----END RSA PRIVATE KEY-----
+        //
+        // Eg: https://github.com/golibs-starter/golib-sample/blob/develop/src/public/testing/create_order_controller_test.go
+        golibsecTestUtil.JwtTestUtilOpt(),
+    }
 }
 
 type ExampleService struct {
-	httpClient client.ContextualHttpClient
+    httpClient client.ContextualHttpClient
 }
 
 func NewExampleService(httpClient client.ContextualHttpClient) *ExampleService {
-	return &ExampleService{httpClient: httpClient}
+    return &ExampleService{httpClient: httpClient}
 }
 ```
 

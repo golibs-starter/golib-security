@@ -2,8 +2,8 @@ package config
 
 import (
 	"fmt"
-	"gitlab.com/golibs-starter/golib-security/web/auth/authorization"
-	"gitlab.com/golibs-starter/golib/config"
+	"github.com/golibs-starter/golib-security/web/auth/authorization"
+	"github.com/golibs-starter/golib/config"
 	"regexp"
 	"strings"
 )

@@ -1,15 +1,15 @@
 package middleware
 
 import (
-	"gitlab.com/golibs-starter/golib-security/utils"
-	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
-	"gitlab.com/golibs-starter/golib-security/web/auth/authorization"
-	"gitlab.com/golibs-starter/golib-security/web/constant"
-	secContext "gitlab.com/golibs-starter/golib-security/web/context"
-	"gitlab.com/golibs-starter/golib-security/web/filter"
-	"gitlab.com/golibs-starter/golib/exception"
-	"gitlab.com/golibs-starter/golib/log"
-	"gitlab.com/golibs-starter/golib/web/response"
+	"github.com/golibs-starter/golib-security/utils"
+	"github.com/golibs-starter/golib-security/web/auth/authen"
+	"github.com/golibs-starter/golib-security/web/auth/authorization"
+	"github.com/golibs-starter/golib-security/web/constant"
+	secContext "github.com/golibs-starter/golib-security/web/context"
+	"github.com/golibs-starter/golib-security/web/filter"
+	"github.com/golibs-starter/golib/exception"
+	"github.com/golibs-starter/golib/log"
+	"github.com/golibs-starter/golib/web/response"
 	"net/http"
 )
 

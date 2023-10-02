@@ -2,10 +2,10 @@ package filter
 
 import (
 	"encoding/base64"
+	"github.com/golibs-starter/golib-security/web/auth/authen"
+	"github.com/golibs-starter/golib-security/web/constant"
+	"github.com/golibs-starter/golib/log"
 	"github.com/pkg/errors"
-	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
-	"gitlab.com/golibs-starter/golib-security/web/constant"
-	"gitlab.com/golibs-starter/golib/log"
 	"net/http"
 	"strings"
 )

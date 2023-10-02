@@ -1,6 +1,6 @@
 package golibsecTestUtil
 
-import "gitlab.com/golibs-starter/golib/config"
+import "github.com/golibs-starter/golib/config"
 
 type JwtTestProperties struct {
 	PrivateKey string

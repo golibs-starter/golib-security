@@ -1,8 +1,8 @@
 package golibsec
 
 import (
+	"github.com/golibs-starter/golib-security/web/config"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/golibs-starter/golib-security/web/config"
 	"testing"
 )
 

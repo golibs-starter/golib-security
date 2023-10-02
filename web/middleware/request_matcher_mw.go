@@ -1,12 +1,12 @@
 package middleware
 
 import (
-	"gitlab.com/golibs-starter/golib-security/web/config"
-	secContext "gitlab.com/golibs-starter/golib-security/web/context"
-	"gitlab.com/golibs-starter/golib/exception"
-	"gitlab.com/golibs-starter/golib/log"
-	"gitlab.com/golibs-starter/golib/log/field"
-	"gitlab.com/golibs-starter/golib/web/response"
+	"github.com/golibs-starter/golib-security/web/config"
+	secContext "github.com/golibs-starter/golib-security/web/context"
+	"github.com/golibs-starter/golib/exception"
+	"github.com/golibs-starter/golib/log"
+	"github.com/golibs-starter/golib/log/field"
+	"github.com/golibs-starter/golib/web/response"
 	"net/http"
 	"strings"
 )

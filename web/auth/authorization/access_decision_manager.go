@@ -1,8 +1,8 @@
 package authorization
 
 import (
-	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
-	"gitlab.com/golibs-starter/golib-security/web/auth/authorization/authority"
+	"github.com/golibs-starter/golib-security/web/auth/authen"
+	"github.com/golibs-starter/golib-security/web/auth/authorization/authority"
 )
 
 type AccessDecisionManager interface {

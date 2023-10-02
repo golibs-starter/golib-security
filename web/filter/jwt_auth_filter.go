@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/golang-jwt/jwt/v4/request"
-	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
-	"gitlab.com/golibs-starter/golib-security/web/config"
-	"gitlab.com/golibs-starter/golib-security/web/constant"
-	"gitlab.com/golibs-starter/golib-security/web/service"
-	"gitlab.com/golibs-starter/golib/log"
+	"github.com/golibs-starter/golib-security/web/auth/authen"
+	"github.com/golibs-starter/golib-security/web/config"
+	"github.com/golibs-starter/golib-security/web/constant"
+	"github.com/golibs-starter/golib-security/web/service"
+	"github.com/golibs-starter/golib/log"
 	"net/http"
 )
 

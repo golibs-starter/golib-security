@@ -2,7 +2,7 @@ package client
 
 import (
 	"context"
-	"gitlab.com/golibs-starter/golib/web/client"
+	"github.com/golibs-starter/golib/web/client"
 	"net/http"
 )
 

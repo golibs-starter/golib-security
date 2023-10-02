@@ -1,7 +1,7 @@
 package authorization
 
 import (
-	"gitlab.com/golibs-starter/golib/exception"
+	"github.com/golibs-starter/golib/exception"
 	"net/http"
 )
 

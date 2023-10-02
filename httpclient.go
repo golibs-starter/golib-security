@@ -1,9 +1,9 @@
 package golibsec
 
 import (
-	"gitlab.com/golibs-starter/golib"
-	secHttpClient "gitlab.com/golibs-starter/golib-security/web/client"
-	"gitlab.com/golibs-starter/golib/web/client"
+	"github.com/golibs-starter/golib"
+	secHttpClient "github.com/golibs-starter/golib-security/web/client"
+	"github.com/golibs-starter/golib/web/client"
 	"go.uber.org/fx"
 )
 

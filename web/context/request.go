@@ -2,9 +2,9 @@ package context
 
 import (
 	"context"
-	"gitlab.com/golibs-starter/golib-security/web/auth/authen"
-	"gitlab.com/golibs-starter/golib-security/web/auth/user"
-	"gitlab.com/golibs-starter/golib-security/web/config"
+	"github.com/golibs-starter/golib-security/web/auth/authen"
+	"github.com/golibs-starter/golib-security/web/auth/user"
+	"github.com/golibs-starter/golib-security/web/config"
 	"net/http"
 )
 

@@ -1,7 +1,7 @@
 package user
 
 import (
-	"gitlab.com/golibs-starter/golib-security/web/auth/authorization/authority"
+	"github.com/golibs-starter/golib-security/web/auth/authorization/authority"
 )
 
 type SimpleUserDetails struct {
